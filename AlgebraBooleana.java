@@ -31,38 +31,42 @@ public class AlgebraBooleana {
             //chamada da funcao com o i-esimo item do array
 
             //limpeza e substituicao da string
-            MyIO.println("String original, antes de limpar: "+entradas[i]);
+            //MyIO.println("String original, antes de substituir letras: "+entradas[i]);
 
             entradas[i] = substituirLetrasExpressao(entradas[i]);
+            //MyIO.println("String original, antes de simplificarNOT(): "+entradas[i]);
             entradas[i] = simplificarNOT(entradas[i]);
+            //MyIO.println("String original, antes de simplificarOperacao(): "+entradas[i]);
             entradas[i] = simplificarOperacao(entradas[i]);
 
             MyIO.println("Resposta final: "+ entradas[i]);
 
-            MyIO.println("terminei essa entrada, indo pra proxima");
+            MyIO.println("");
         }
 
     }
 
     /*
     Essa funcao serve para simplificar NOTs unicos no codigo
+    Exemplo: "not(0)"
     */
     public static String simplificarNOT(String fraseOriginal){
         char bitDaOperacao;
 
+        //começar de tras pra frente, e o tamanho minimo de uma expressao unica é 6
         for (int i = fraseOriginal.length()-1; i >= 5; i--) {
 
             //significa que eh um parenteses simples, ou seja, há apenas uma operacao
             boolean podeSimplificar = fraseOriginal.charAt(i) == ')' && fraseOriginal.charAt(i-1) != ')';
 
             //not(A)
-            //0123456789
-
+            //012345
+            //letra 'A' = 5-1 = i-1
 
             //operacao not e seus metodos
             if(podeSimplificar && fraseOriginal.charAt(i-3) == 't' && fraseOriginal.charAt(i-4) == 'o' && fraseOriginal.charAt(i-4) == 'n'){
-
                 bitDaOperacao = operacaoNOT(fraseOriginal.charAt(i-1));
+                // i-5 é onde o 'n' do not está e i é o ')'
                 fraseOriginal = reformatarString(fraseOriginal, i-5, i, bitDaOperacao);
             }
         }
@@ -77,63 +81,58 @@ public class AlgebraBooleana {
 
         char bitDaOperacao;
 
-        //not(A)
-        //0123456789
-        // or( A , B)
-
         // for externo para varrer a string multiplas vezes
-        for(int k = fraseOriginal.length()-1; k > 5 && fraseOriginal.length() >= 5; k--){
+        for (int i = fraseOriginal.length(); i > 9; i--) {
 
-            for (int i = fraseOriginal.length(); i > 9; i--) {
+            //significa que eh um parenteses simples, ou seja, há apenas uma operacao
+            boolean podeSimplificar = fraseOriginal.charAt(i) == ')' && fraseOriginal.charAt(i-1) != ')';
+            boolean parentesesAchado = false;
 
-                //significa que eh um parenteses simples, ou seja, há apenas uma operacao
-                boolean podeSimplificar = fraseOriginal.charAt(i) == ')' && fraseOriginal.charAt(i-1) != ')';
-                boolean parentesesAchado = false;
+            // so pro javac nao encher com o fato de nao ter inicializado
+            int posicaoAberturaParenteses = 5;
 
-                // so pro javac nao encher com o fato de nao ter inicializado
-                int posicaoAberturaParenteses = 5;
-
-                //preciso agora achar o parenteses  de abertura
-                if(podeSimplificar){
-                    for (int j = i-1; j > 5; j++) {
-                        parentesesAchado = fraseOriginal.charAt(j) == '(';
-                        if(parentesesAchado)
-                            posicaoAberturaParenteses = j;
+            //preciso agora achar o parenteses  de abertura
+            if(podeSimplificar){
+                for (int j = i-1; j > 2; j--) {
+                    if(fraseOriginal.charAt(j) == '('){
+                        posicaoAberturaParenteses = j;
+                        j = 0;
+                        parentesesAchado = true;
                     }
                 }
+            }
 
-                    /*
-                    ATENCAO
-                    Para passar na funcao reformatarString, é necessário passar a primeira letra da operacao ('a', por exemplo) e
-                    o parenteses de fechamento, já que a funcao usa as duas posicoes como demarcadores, nao os incluindo
-                    */
+            /*
+            ATENCAO
+            Para passar a funcao reformatarString, é necessário passar a primeira letra da operacao ('a', por exemplo) e
+            o parenteses de fechamento, já que a funcao usa as duas posicoes como demarcadores, nao os incluindo
+            */
 
-                //ja achei o parenteses de abertura e o de fechamento. Posso seguir com a respectiva operacao
+            //ja achei o parenteses de abertura e o de fechamento. Posso seguir com a respectiva operacao
 
+            //operacao and
+            if(podeSimplificar && parentesesAchado && fraseOriginal.charAt(posicaoAberturaParenteses-1) == 'd' && fraseOriginal.charAt(posicaoAberturaParenteses-2) == 'n' && fraseOriginal.charAt(posicaoAberturaParenteses-3) == 'a'){
 
-                //operacao and e seus metodos
-                if(podeSimplificar && parentesesAchado && fraseOriginal.charAt(posicaoAberturaParenteses-1) == 'd' && fraseOriginal.charAt(posicaoAberturaParenteses-2) == 'n' && fraseOriginal.charAt(posicaoAberturaParenteses-3) == 'a'){
+                bitDaOperacao = operacaoAND(cortarString(fraseOriginal, posicaoAberturaParenteses, i));
+                fraseOriginal = reformatarString(fraseOriginal, posicaoAberturaParenteses-2, i, bitDaOperacao);
+            }
 
-                    bitDaOperacao = operacaoAND(cortarString(fraseOriginal, posicaoAberturaParenteses, i));
-                    fraseOriginal = reformatarString(fraseOriginal, posicaoAberturaParenteses-2, i, bitDaOperacao);
-                }
+            //operacao or
+            else if(podeSimplificar && parentesesAchado && fraseOriginal.charAt(posicaoAberturaParenteses-1) == 'r' && fraseOriginal.charAt(posicaoAberturaParenteses-2) == 'o'){
 
-                //operacao or
-                else if(podeSimplificar && parentesesAchado && fraseOriginal.charAt(posicaoAberturaParenteses-1) == 'r' && fraseOriginal.charAt(posicaoAberturaParenteses-2) == 'o'){
+                bitDaOperacao = operacaoOR(cortarString(fraseOriginal, posicaoAberturaParenteses, i));
+                fraseOriginal = reformatarString(fraseOriginal, posicaoAberturaParenteses-2, i, bitDaOperacao);
+            }
+            //operacao not
+            else if(podeSimplificar && parentesesAchado && fraseOriginal.charAt(posicaoAberturaParenteses-1) == 't' && fraseOriginal.charAt(posicaoAberturaParenteses-2) == 'o' && fraseOriginal.charAt(posicaoAberturaParenteses-3) == 'n'){
 
-                    bitDaOperacao = operacaoOR(cortarString(fraseOriginal, posicaoAberturaParenteses, i));
-                    fraseOriginal = reformatarString(fraseOriginal, posicaoAberturaParenteses-2, i, bitDaOperacao);
-                }
-                //operacao not
-                else if(podeSimplificar && parentesesAchado && fraseOriginal.charAt(posicaoAberturaParenteses-1) == 't' && fraseOriginal.charAt(posicaoAberturaParenteses-2) == 'o' && fraseOriginal.charAt(posicaoAberturaParenteses-3) == 'n'){
-
-                    bitDaOperacao = operacaoNOT(fraseOriginal.charAt(posicaoAberturaParenteses+1));
-                    fraseOriginal = reformatarString(fraseOriginal, posicaoAberturaParenteses-3, i, bitDaOperacao);
-                }
+                bitDaOperacao = operacaoNOT(fraseOriginal.charAt(posicaoAberturaParenteses+1));
+                fraseOriginal = reformatarString(fraseOriginal, posicaoAberturaParenteses-3, i, bitDaOperacao);
             }
         }
 
-        // uma ultima varredura com o simplificar not
+
+        // uma ultima varredura com o simplificarNOT
         fraseOriginal = simplificarNOT(fraseOriginal);
 
         return fraseOriginal;
@@ -208,9 +207,10 @@ public class AlgebraBooleana {
         if(posIn > frase.length())
             MyIO.println("A posicao inicial estoura o length da string, tá dando pau nisso.");
 
-        else if(posFin >  frase.length())
+        else if(posFin > frase.length())
             MyIO.println("A posicao final estoura o length da string, tá dando pau nisso.");
 
+        //excluir posIn e posFin da string cortada
         for (int i=posIn+1; i < posFin; i++) {
             novaString += frase.charAt(i);
         }
@@ -229,24 +229,25 @@ public class AlgebraBooleana {
         String posterior = "";
         String novaStringSubstituida = "";
 
-        //salvar os chars da original aqui dentro
+        //salvar os chars da original até anteriorFim
         for(int i = 0; i < anteriorFim; i++)
             anterior += fraseOriginal.charAt(i);
 
+        //salvar os chars posteriores até o fim
         for (int i = posteriorInicio+1; i < fraseOriginal.length(); i++) {
             posterior += fraseOriginal.charAt(i);
         }
 
-        // adicionar as strings juntas agora. Nao fui direto antes para evitar arrayOutOfBounds, assim possuo os tamanhos adequados
+        // adicionar as strings juntas agora, fazendo anterior + meio + fim, sendo o meio um unico char
         for(int i = 0;i<anterior.length(); i++)
             novaStringSubstituida += anterior.charAt(i);
 
-        //agora que estou no meio posso jogar o que é pra inserir no meio
+        //agora que estou no meio posso jogar o char que é pra inserir no meio
         novaStringSubstituida += substituir;
 
         //jogar o resto dentro, pra fechar a string e retornar
         for(int i = 0;i<posterior.length(); i++)
-            novaStringSubstituida += anterior.charAt(i);
+            novaStringSubstituida += posterior.charAt(i);
 
         return novaStringSubstituida;
 
@@ -254,12 +255,12 @@ public class AlgebraBooleana {
 
     //executar a operacao AND com os operandos binarios dentro
     public static char operacaoAND(String frase){
-        char resultado = 1;
+        char resultado = '1';
         //iterar a string pra procurar zeros
         for(int i=0;i<frase.length();i++){
             //se houver qualquer 0 o AND retornara false
             if(frase.charAt(i) == '0'){
-                resultado = 0;
+                resultado = '0';
                 i = frase.length();
             }
         }
@@ -268,12 +269,12 @@ public class AlgebraBooleana {
 
     //executar a operacao OR com os operandos binarios dentro
     public static char operacaoOR(String frase){
-        char resultado = 0;
+        char resultado = '0';
         //iterar a string pra procurar 1s
         for(int i=0;i<frase.length();i++){
             //se houver qualquer 1 o or retornara true
             if(frase.charAt(i) == '1'){
-                resultado = 1;
+                resultado = '1';
                 i = frase.length();
             }
         }
@@ -282,7 +283,7 @@ public class AlgebraBooleana {
 
     }
 
-    
+
     // operacao not
     public static char operacaoNOT(char bit){
         //flipar o valor binario da expressao
