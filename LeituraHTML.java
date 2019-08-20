@@ -21,9 +21,7 @@ public class LeituraHTML {
 
         //calculo do tamanho real. Começa em -1 pq vai ser incrementado
         int tamanhoRealEntradas = -1;
-
-
-
+        
         do{
             tamanhoRealEntradas++;
             //ler o link e nome. Entradas impares sao link
@@ -57,7 +55,7 @@ public class LeituraHTML {
                 excecao.printStackTrace();
             }
 
-            int[] contadorGlobal = contadorLetras(resp, entradas[i]);
+            int[] contadorGlobal = contadorLetras(resp);
 
             printarRespostas(resp, entradas[i], contadorGlobal);
 
@@ -85,7 +83,7 @@ public class LeituraHTML {
         MyIO.println(pagina);
 
     }
-    public static int[] contadorLetras(String codigo, String pagina){
+    public static int[] contadorLetras(String codigo){
         //posicao na string html gigante
 
         int[] contadorLocal = new int[25];
@@ -119,13 +117,7 @@ public class LeituraHTML {
                 ehTag = true;
                 posicaoCodigo += "<table>".length();
             }
-            // nome da pagina
-            /*
-            else if(serIgualNomePagina(codigo, posicaoCodigo, pagina)){
-                ehTag = true;
-                posicaoCodigo += (pagina.length()+1);
-            }
-            */
+
             //contar as vogais
             if(!ehTag){
                 for (int i = 0; i < conjuntoVogais.length; i++) {
@@ -174,23 +166,6 @@ public class LeituraHTML {
         return serTable;
     }
 
-    //metodo ehIgualNomePagina
-    public static boolean serIgualNomePagina(String codigo, int posicao, String pagina){
-        boolean serIgual = true;
-        //evitar erros
-        if(posicao + pagina.length() < codigo.length()){
-            for (int i = 0; i < pagina.length(); i++) {
-                if(codigo.charAt(posicao+i) != pagina.charAt(i)){
-                    serIgual = false;
-                    i = pagina.length();
-                }
-            }
-        }
-        else
-            serIgual = false;
-
-        return serIgual;
-    }
 
     //verificar fim da entrada
     static boolean estaNoFim(String frase){
