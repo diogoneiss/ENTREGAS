@@ -20,7 +20,7 @@ char* replace(char retirar[], char linha[]);
 //fim prototipos
 
 
-//classe principal dos times
+//classe principal dos tvimes
 typedef struct ClasseTime{
     char nome[500];
     char apelido[500];
@@ -39,16 +39,16 @@ typedef struct ClasseTime{
 
     void imprimir(){
 
-        printf("\nNome: %s", nome);
-        printf(" ##\nApelido: %s", apelido);
+        printf("%s", nome);
+        printf(" ## %s", apelido);
         //printf(" ##\n Data: %02d/%02d/%04d",fundacaoDia, fundacaoMes, fundacaoAno);
-        printf(" ##\nData: %s", datas);
-        printf(" ##\nEstadio: %s", estadio);
-        printf(" ##\nCapacidade: %d", capacidade);
-        printf(" ##\nTecnico: %s", tecnico);
-        printf(" ##\nLiga: %s", liga);
-        printf(" ##\nNome arquivo: %s", nomeArquivo);
-        printf(" ##\nTamanho pagina: %ld ##\n\n", paginaTam);
+        printf(" ## %s", datas);
+        printf(" ## %s", estadio);
+        printf(" ## %d", capacidade);
+        printf(" ## %s", tecnico);
+        printf(" ## %s", liga);
+        printf(" ## %s", nomeArquivo);
+        printf(" ## %ld ##\n", paginaTam);
 
     }
 
@@ -155,6 +155,40 @@ char* pegarNome(char linhaCompleta[]){
     strcpy(resposta, lerEntreAspas(substring(busca, linhaCompleta), strlen(busca)));
     //printf("\n Resposta eh %s\n", resposta);
     //printf("\nCheguei e sai da funcao PegarNome com sucesso.\n");
+    
+    bool tagAchada = false;
+    bool leituraParenteses = false;
+
+    int contadorPosicao = 0;
+    char fraseFiltrada[3000];
+
+    for (int i = 0; i < strlen(linhaCompleta); i++)
+    {
+        //significa que achou uma tag e está no meio da leitura dela
+        if(!leituraParenteses && !tagAchada && linhaCompleta[i] == '<')
+            tagAchada = true;
+
+            //siginifica que acabou a tag
+        else if(!leituraParenteses && tagAchada && linhaCompleta[i] == '>')
+            tagAchada = false;
+
+            //leitura apos
+        else if(!tagAchada){
+            //sair se achar o <
+            if(linhaCompleta[i] == '<' && linhaCompleta[i+2] != '>' && linhaCompleta[i+1] != '>' ){
+                //printf("Fim da string aqui! %c", linhaCompleta[i]);
+                fraseFiltrada[contadorPosicao] = '\0';
+                i = strlen(linhaCompleta);
+            }
+
+            else{
+                fraseFiltrada[contadorPosicao] = linhaCompleta[i];
+                contadorPosicao++;
+                leituraParenteses = true;
+            }
+        }
+    }
+    
     return strdup(resposta);
 }
 
@@ -229,9 +263,29 @@ char* pegarData(char linhaCompleta[]){
     else
         resposta = lerEntreAspas(substring(busca2, linhaCompleta), strlen(busca2));
 
+
     //printf("\nCheguei e sai da funcao pegarData com sucesso.\n");
 
-    return strdup(resposta);
+    // agora que tenho a resposta, preciso filtrá-la. O ideal é parar depois que achar algum char que não seja letra, dia ou traço
+    char respostaFiltrada[strlen(resposta)];
+    //printf("\nResposta nao filtrada: %s\n", resposta);
+
+    for(int i = 0; i < strlen(resposta); i++){
+        bool ehLetra = (resposta[i] >= 'a' && resposta[i] <= 'z') || (resposta[i] >= 'A' && resposta[i] <= 'Z');
+        bool ehNum = resposta[i] >= '0' && resposta[i] <= '9';
+        bool parada = !ehLetra && !ehNum && resposta[i] != '-';
+        
+        if(parada){
+            i = strlen(resposta);
+            respostaFiltrada[i] = '\0';
+        }
+
+        else
+            respostaFiltrada[i] = resposta[i];
+    }
+    //printf("\nResposta filtrada bugadona: %s\n", respostaFiltrada);
+
+    return strdup(respostaFiltrada);
 }
 
 int pegarCapacidade(char linhaCompleta[]){
@@ -291,18 +345,71 @@ char* lerArquivo(char endereco[]){
     return linha;
 }
 
+char* str_replace(char *orig, char *rep, char *with) {
+    char *result; // the return string
+    char *ins;    // the next insert point
+    char *tmp;    // varies
+    int len_rep;  // length of rep (the string to remove)
+    int len_with; // length of with (the string to replace rep with)
+    int len_front; // distance between rep and end of last rep
+    int count;    // number of replacements
+
+    // sanity checks and initialization
+    if (!orig || !rep)
+        return NULL;
+    len_rep = strlen(rep);
+
+    if (len_rep == 0)
+        return NULL; // empty rep causes infinite loop during count
+    
+    if (!with)
+        with = (char*) "";
+    len_with = strlen(with);
+
+    // count the number of replacements needed
+    ins = orig;
+    for (count = 0; tmp = strstr(ins, rep); ++count) {
+        ins = tmp + len_rep;
+    }
+
+    tmp = result = (char*) malloc(strlen(orig) + (len_with - len_rep) * count + 1);
+
+    if (!result)
+        return NULL;
+
+    // first time through the loop, all the variable are set correctly
+    // from here on,
+    //    tmp points to the end of the result string
+    //    ins points to the next occurrence of rep in orig
+    //    orig points to the remainder of orig after "end of rep"
+    while (count--) {
+        ins = strstr(orig, rep);
+        len_front = ins - orig;
+        tmp = strncpy(tmp, orig, len_front) + len_front;
+        tmp = strcpy(tmp, with) + len_with;
+        orig += len_front + len_rep; // move to next "end of rep"
+    }
+    strcpy(tmp, orig);
+    return strdup(result);
+}
+
 
 //remover todas as ocorrencias de uma string dentro de outra
 char* replace( char retirar[],  char linha[]){
-    char* novaFrase = (char*) malloc(strlen(linha)+1);
+    //char* novaFrase = (char*) malloc(strlen(linha)+1);
+    char novaFrase[strlen(linha)];
+    memset(novaFrase, '\0', strlen(linha));
+    
     int contadorPosicaoFraseFinal = 0;
     int j;
 
     bool replaceEncontrado = true;
 
     for (int i = 0; i < strlen(linha); i++){
+        // se o caracter i é igual ao zerissimo char de retirar
         if(linha[i] == retirar[0]){
 
+            // o for serve pra verificar se são diferentes
             for(j = 1; j < strlen(retirar); j++){
                 if(linha[i+j] != retirar[j]){
                     replaceEncontrado = false;
@@ -316,14 +423,13 @@ char* replace( char retirar[],  char linha[]){
             else
                 replaceEncontrado = true;
         }
-
         else{
+            replaceEncontrado = true;
             novaFrase[contadorPosicaoFraseFinal] = linha[i];
             contadorPosicaoFraseFinal++;
         }
     }
-    //terminar
-    novaFrase[contadorPosicaoFraseFinal+1] = '\0';
+ 
     return strdup(novaFrase);
 }
 
@@ -333,6 +439,8 @@ char* substring (char padrao[], char entrada[]){
     return strdup(pointer);
 }
 
+
+
 /*
 Alocará memoria para um objeto time e setara os atributos de acordo.
 */
@@ -340,8 +448,7 @@ Time* construtor( char arquivo[]){
 
     // alocacoes de memoria
     Time* ptr = (Time*) malloc(sizeof(Time));
-    char* linhaCompleta = (char*) malloc(10000);
-
+    char* linhaCompleta= (char*) malloc(10000);
 
     // METODOS ENVOLVENDO O ARQUIVO EM SI
 
@@ -354,7 +461,7 @@ Time* construtor( char arquivo[]){
 
     // armazenar em linha completa a linha toda com o "vcard"
     strcpy(linhaCompleta, lerArquivo(arquivo));
-
+    
     strcpy(ptr->nome, pegarNome(linhaCompleta));
     strcpy(ptr->apelido, pegarApelido(linhaCompleta));
     strcpy(ptr->estadio, pegarEstadio(linhaCompleta));
