@@ -60,7 +60,7 @@ typedef struct ClasseTime{
 
 typedef struct ListaTAD {
     int n;
-    Time* listaDosTimes;
+    Time listaDosTimes[200];
 
     void inserirInicio(Time* adicao){
         if(n >= 200)
@@ -193,6 +193,8 @@ char* lerEntreAspasAteTD(char linhaCompleta[], int inicio){
     int contadorPosicao = 0;
     char fraseFiltrada[3000];
 
+    printf("\nFrase recebida: %s\n", linhaCompleta);
+
     for (int i = inicio; i < strlen(linhaCompleta)-3; i++)
     {
         if(linhaCompleta[i] == '<' && linhaCompleta[i+1] == '/' && linhaCompleta[i+2] == 't' && linhaCompleta[i+3] == 'd'){
@@ -218,6 +220,12 @@ char* lerEntreAspasAteTD(char linhaCompleta[], int inicio){
             
         }
     }
+
+    if(fraseFiltrada == NULL)
+        printf("Erro! Null");
+    else
+        printf("\nFrase filtrada: %s\n", fraseFiltrada);
+
     return strdup(fraseFiltrada);
 
 }
@@ -349,6 +357,9 @@ char* pegarLiga(char linhaCompleta[]){
     char busca[] = "League";
     char* resposta = lerEntreAspasAteTD(substring(busca, linhaCompleta), strlen(busca));
     //printf("\nCheguei e sai da funcao pegarLiga com sucesso.\n");
+
+    
+    
     return strdup(resposta);
 }
 
@@ -694,6 +705,9 @@ char* substring(char frase[], int pos, int fim){
 char* substring (char padrao[], char entrada[]){
     char* pointer = strstr(entrada, padrao);
 
+    if(pointer == NULL)
+        printf("Ponteiro vazio");
+
     return strdup(pointer);
 }
 /*
@@ -745,7 +759,7 @@ char* filtrarString(char arquivo[]){
 Lista* construtorLista(int tam){
     Lista* listaComTimes = (Lista*) malloc(sizeof(Lista));
     listaComTimes->n = 0;
-    listaComTimes->listaDosTimes = (Time*) malloc(200*sizeof(Time));
+    //listaComTimes->listaDosTimes = (Time*) malloc(200*sizeof(Time));
 
     return listaComTimes;
 }
@@ -919,5 +933,8 @@ int main(){
 
 
     //fim da main
+
+
+
 
 }
