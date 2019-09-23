@@ -3,6 +3,13 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+/* PROBLEMAS
+
+Algum malloc tá dando pau
+Times especificos com problema:
+/tmp/times/AS_Saint-Etienne.html
+
+*/
 
 //Prototipos de metodos
 char* lerEntreAspas(char linhaCompleta[], int inicio);
@@ -193,7 +200,7 @@ char* lerEntreAspasAteTD(char linhaCompleta[], int inicio){
     int contadorPosicao = 0;
     char fraseFiltrada[3000];
 
-    printf("\nFrase recebida: %s\n", linhaCompleta);
+    //printf("\nFrase recebida: %s\n", linhaCompleta);
 
     for (int i = inicio; i < strlen(linhaCompleta)-3; i++)
     {
@@ -223,11 +230,10 @@ char* lerEntreAspasAteTD(char linhaCompleta[], int inicio){
 
     if(fraseFiltrada == NULL)
         printf("Erro! Null");
-    else
-        printf("\nFrase filtrada: %s\n", fraseFiltrada);
+    //else
+     //   printf("\nFrase filtrada: %s\n", fraseFiltrada);
 
     return strdup(fraseFiltrada);
-
 }
 
 char* lerAPartirDaClasse(char linhaCompleta[]){
@@ -299,7 +305,7 @@ char* pegarNome(char linhaCompleta[]){
 
     int contadorPosicao = 0;
     char fraseFiltrada[3000];
-
+/*
     for (int i = 0; i < strlen(linhaCompleta); i++)
     {
         //significa que achou uma tag e está no meio da leitura dela
@@ -326,8 +332,8 @@ char* pegarNome(char linhaCompleta[]){
             }
         }
     }
-    
-    return strdup(resposta);
+    */
+    return resposta;
 }
 
 char* pegarApelido(char linhaCompleta[]){
@@ -338,7 +344,7 @@ char* pegarApelido(char linhaCompleta[]){
     strcpy(resposta, lerAPartirDaClasse(substring(busca, linhaCompleta)));
     //printf("\n Resposta eh %s\n", resposta);
     //printf("\nCheguei e sai da funcao pegarApelido com sucesso.\n");
-    return strdup(resposta);
+    return (resposta);
 }
 
 char* pegarEstadio(char linhaCompleta[]){
@@ -349,7 +355,7 @@ char* pegarEstadio(char linhaCompleta[]){
     strcpy(resposta, lerEntreAspasAteTD(substring(busca, linhaCompleta), strlen(busca)));
     //printf("\n Resposta eh %s\n", resposta);
     //printf("\nCheguei e sai da funcao pegarEstadio com sucesso.\n");
-    return strdup(resposta);
+    return (resposta);
 
 }
 
@@ -358,8 +364,6 @@ char* pegarLiga(char linhaCompleta[]){
     char* resposta = lerEntreAspasAteTD(substring(busca, linhaCompleta), strlen(busca));
     //printf("\nCheguei e sai da funcao pegarLiga com sucesso.\n");
 
-    
-    
     return strdup(resposta);
 }
 
@@ -564,22 +568,39 @@ long pegarTamanhoPag(char arquivo[]){
 }
 
 char* lerArquivo(char endereco[]){
-    char* linha = NULL;
+    char linha[10000];
     FILE *arquivo = fopen(endereco, "rb");
     size_t len = 0;
+    char* aux = (char*)malloc(100000);
+    memset(aux, '\0', sizeof(aux));
 
     if(arquivo == NULL){
         printf("Error! File is empty");
         exit(1);
     }
     else{
-        getline(&linha, &len, arquivo);
+        fgets(linha, 10000, arquivo);
+        linha[strlen(linha)-1] = ' ';
         //ler enquanto nao for eof e nao tiver "vcard"
         while(!feof(arquivo) && strstr(linha, "vcard") == 0){
-            getline(&linha, &len, arquivo);
+            fgets(linha, 10000, arquivo);
+            linha[strlen(linha)-1] = ' ';
         }
     }
-    return linha;
+    //jogar linha em aux
+    strcpy(aux, linha); 
+    //se estiver com quebra de linha
+    
+    while(!feof(arquivo) && strstr(aux, "<table style") == 0){
+        fgets(linha, 10000, arquivo);
+        linha[strlen(linha)-1] = ' ';
+        //linha[strlen(linha)] = ' ';
+        strcat(aux, linha);
+    }
+    
+   // free(linha);
+    fclose(arquivo);
+    return (aux);
 }
 
 char* str_replace(char *orig, char *rep, char *with) {
@@ -773,6 +794,7 @@ Time* construtor( char arquivo[]){
     Time* ptr = (Time*) malloc(sizeof(Time));
     char* linhaCompleta= (char*) malloc(10000);
     char* tmp = (char*) malloc(sizeof(linhaCompleta));
+    char* stringTmp = NULL;
 
     // METODOS ENVOLVENDO O ARQUIVO EM SI
 
@@ -785,15 +807,33 @@ Time* construtor( char arquivo[]){
 
     // armazenar em linha completa a linha toda com o "vcard"
     //strcpy(linhaCompleta, lerArquivo(arquivo));
-    strcat(linhaCompleta, filtrarString(arquivo));
+    stringTmp = filtrarString(arquivo);
+    strcat(linhaCompleta, stringTmp);
+    free(stringTmp);
 
+    stringTmp = pegarNome(linhaCompleta);
+    strcpy(ptr->nome, stringTmp);
+    free(stringTmp);
 
-    strcpy(ptr->nome, pegarNome(linhaCompleta));
-    strcpy(ptr->apelido, pegarApelido(linhaCompleta));
-    strcpy(ptr->estadio, pegarEstadio(linhaCompleta));
-    strcpy(ptr->datas, pegarData(linhaCompleta));
-    strcpy(ptr->liga, pegarLiga(linhaCompleta));
-    strcpy(ptr->tecnico, pegarTecnico(linhaCompleta));
+    stringTmp = pegarApelido(linhaCompleta);
+    strcpy(ptr->apelido, stringTmp );
+    free(stringTmp);
+
+    stringTmp = pegarEstadio(linhaCompleta);
+    strcpy(ptr->estadio, stringTmp);
+    free(stringTmp);
+
+    stringTmp = pegarData(linhaCompleta);
+    strcpy(ptr->datas,stringTmp);
+    free(stringTmp);
+
+    stringTmp = pegarLiga(linhaCompleta);
+    strcpy(ptr->liga, stringTmp);
+    free(stringTmp);
+    
+    stringTmp = pegarTecnico(linhaCompleta);
+    strcpy(ptr->tecnico, stringTmp );
+    free(stringTmp);
 
 
     int* datas = filtrarData(pegarData(linhaCompleta));
@@ -840,12 +880,14 @@ int main(){
 
         // alocar memoria, atribuir atributos com a funcao construtor e imprimir
         conjuntoTimes[i] = construtor(entradaTimes[i]);
-        conjuntoTimes[i]->imprimir();
+        //conjuntoTimes[i]->imprimir();
     }
 
     /*********** lista da questao ******************/
 
     //ler a quantidade de operacoes a serem realizadas
+    //printf("\nInsira a quantidade de modificacoes: ");
+    
     int quantidadeModificacoes;
     scanf("%d", &quantidadeModificacoes);
 
@@ -859,7 +901,7 @@ int main(){
         listaTimesMain->inserirFim(conjuntoTimes[i]);
     }
 
-    listaTimesMain->mostrar();
+    //listaTimesMain->mostrar();
 
     /*************MÉTODOS DA LISTA DAQUI EM DIANT**********/
 
@@ -878,7 +920,7 @@ int main(){
 
     // ler e executar as operacoes
     for(int j = 0; j< quantidadeModificacoes; j++){
-        printf("\n%d operacao: %s", j , operacoes[j]);
+        //printf("\n%d operacao: %s", j , operacoes[j]);
 
         //metodos de insercao
         if(operacoes[j][0] == 'I'){
