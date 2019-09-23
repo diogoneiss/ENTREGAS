@@ -495,7 +495,7 @@ char* lerArquivo(char endereco[]){
     char linha[10000];
     FILE *arquivo = fopen(endereco, "rb");
     size_t len = 0;
-    char* aux = (char*)malloc(10000);
+    char* aux = (char*)malloc(5000);
     memset(aux, '\0', sizeof(aux));
 
     if(arquivo == NULL){
@@ -550,8 +550,9 @@ char *replaceWord(const char *s, const char *oldW, const char *newW)
     } 
   
     // Making new string of enough length 
-    result = (char *)malloc(i + cnt * (newWlen - oldWlen) + 1); 
-  
+    //result = (char *)malloc(i + cnt * (newWlen - oldWlen) + 1); 
+    result = (char *)malloc(5000); 
+
     i = 0; 
     while (*s) 
     { 
@@ -569,6 +570,10 @@ char *replaceWord(const char *s, const char *oldW, const char *newW)
     result[i] = '\0'; 
     return result; 
 } 
+/*
+
+FUNCAO NAO UTILIZADA MAIS
+SUBSTITUIDA PELA ACIMA
 
 char* st_replace(char *orig, char *rep, char *with) {
     char *result; // the return string
@@ -618,6 +623,7 @@ char* st_replace(char *orig, char *rep, char *with) {
     
     return strdup(result);
 }
+*/
 
 
 //remover todas as ocorrencias de uma string dentro de outra
@@ -662,10 +668,12 @@ char* replace( char retirar[],  char linha[]){
 }
 
 char* substring (char padrao[], char entrada[]){
-    char* pointer = "";
-    
+    const char* pointer = "";
+
     if(strstr(entrada, padrao) != NULL)
         pointer = strstr(entrada, padrao);
+    else
+        printf("\nALERTA! PONTEIRO NULO No padrão de ENTRADA %s\n", padrao);
 
     return strdup(pointer);
 }
@@ -674,7 +682,7 @@ Metodo recebe o nome do arquivo, le ele, retira a string e a filtra, retornando 
 */
 char* filtrarString(char arquivo[]){
 
-    char* linhaOriginal = (char*) malloc(10000);
+    char* linhaOriginal = (char*) malloc(5000);
     memset(linhaOriginal, '\0', sizeof(linhaOriginal));
 
     // guardar o conteudo da linha do arquivo
