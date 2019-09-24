@@ -162,8 +162,8 @@ char* lerAPartirDaClasse(char linhaCompleta[]){
         }
     }
     //arranjo com a resposta com memset
-    char *resposta = (char*)malloc(1000);
-    memset(resposta, '\0', 1000);
+    char *resposta = (char*)malloc(5000);
+    memset(resposta, '\0', 5000);
 
     int contadorPos = 0;
 
@@ -495,7 +495,7 @@ char* lerArquivo(char endereco[]){
     char linha[10000];
     FILE *arquivo = fopen(endereco, "rb");
     size_t len = 0;
-    char* aux = (char*)malloc(5000);
+    char* aux = (char*)malloc(10000);
     memset(aux, '\0', sizeof(aux));
 
     if(arquivo == NULL){
@@ -551,7 +551,7 @@ char *replaceWord(const char *s, const char *oldW, const char *newW)
   
     // Making new string of enough length 
     //result = (char *)malloc(i + cnt * (newWlen - oldWlen) + 1); 
-    result = (char *)malloc(5000); 
+    result = (char *)malloc(8000); 
 
     i = 0; 
     while (*s) 
@@ -668,14 +668,16 @@ char* replace( char retirar[],  char linha[]){
 }
 
 char* substring (char padrao[], char entrada[]){
-    const char* pointer = "";
+    char* pointer = NULL;
 
     if(strstr(entrada, padrao) != NULL)
         pointer = strstr(entrada, padrao);
     else
         printf("\nALERTA! PONTEIRO NULO No padrão de ENTRADA %s\n", padrao);
 
-    return strdup(pointer);
+    printf("strdupp=======  %s \n", pointer);
+
+    return pointer;
 }
 /*
 Metodo recebe o nome do arquivo, le ele, retira a string e a filtra, retornando uma duplicata da string limpa
@@ -683,7 +685,7 @@ Metodo recebe o nome do arquivo, le ele, retira a string e a filtra, retornando 
 char* filtrarString(char arquivo[]){
 
     char* linhaOriginal = (char*) malloc(5000);
-    memset(linhaOriginal, '\0', sizeof(linhaOriginal));
+    memset(linhaOriginal, '\0', sizeof(*linhaOriginal));
 
     // guardar o conteudo da linha do arquivo
     strcpy(linhaOriginal, lerArquivo(arquivo));
@@ -701,7 +703,7 @@ char* filtrarString(char arquivo[]){
 
     //alocacao da string de resposta
     char* stringSemiLimpa = (char*) malloc(strlen(linhaOriginal));
-    memset(stringSemiLimpa, '\0', strlen(linhaOriginal));
+    memset(stringSemiLimpa, 0, strlen(linhaOriginal));
 
     strcpy(stringSemiLimpa, linhaOriginal);
 
@@ -709,19 +711,19 @@ char* filtrarString(char arquivo[]){
     if(strstr(linhaOriginal, troca1) != 0){
         temp = replaceWord(stringSemiLimpa, troca1, subst);
 
-        memset(stringSemiLimpa, '\0', strlen(stringSemiLimpa));
+        memset(stringSemiLimpa, 0, strlen(stringSemiLimpa));
         strcpy(stringSemiLimpa , temp);
         
-        free(temp);
+        //free(temp);
     }
         
     if(strstr(linhaOriginal, troca2) != 0){
         temp = replaceWord(stringSemiLimpa, troca2, subst);
 
-        memset(stringSemiLimpa, '\0', strlen(stringSemiLimpa));
+        memset(stringSemiLimpa, 0, strlen(stringSemiLimpa));
         strcpy(stringSemiLimpa , temp);
         
-        free(temp);
+        //free(temp);
     }
        
     if(strstr(linhaOriginal, troca3) != 0){
@@ -730,7 +732,7 @@ char* filtrarString(char arquivo[]){
         memset(stringSemiLimpa, '\0', strlen(stringSemiLimpa));
         strcpy(stringSemiLimpa , temp);
         
-        free(temp);
+        //free(temp);
     }   
 
     if(strstr(linhaOriginal, troca4) != 0){
@@ -739,7 +741,7 @@ char* filtrarString(char arquivo[]){
         memset(stringSemiLimpa, '\0', strlen(stringSemiLimpa));
         strcpy(stringSemiLimpa , temp);
         
-        free(temp);
+        //free(temp);
     }
     if(strstr(linhaOriginal, troca5) != 0){
         temp = replaceWord(stringSemiLimpa, troca5, subst);
@@ -747,7 +749,7 @@ char* filtrarString(char arquivo[]){
         memset(stringSemiLimpa, '\0', strlen(stringSemiLimpa));
         strcpy(stringSemiLimpa , temp);
         
-        free(temp);
+        //free(temp);
     }
         
     /*
@@ -922,7 +924,8 @@ int main(){
         // alocar memoria, atribuir atributos com a funcao construtor e imprimir
         conjuntoTimes[i] = construtor(entradaTimes[i]);
         conjuntoTimes[i]->imprimir();
-        free(conjuntoTimes[i]);
+        printf("Entrada numero %d impressa com sucesso\n\n", i);
+        //free(conjuntoTimes[i]);
     }
     /*
     int tam = sizeof(conjuntoTimes)/sizeof(conjuntoTimes[0]);
