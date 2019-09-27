@@ -4,6 +4,10 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define TAM_LINHA 8000
+#define TAM_ATRIBUTO 500
+#define TAM_DATA 150
+
 
 //Prototipos de metodos
 char* lerEntreAspas(char linhaCompleta[], int inicio);
@@ -25,14 +29,14 @@ int* splitarData(char linha[]);
 
 //classe principal dos tvimes
 typedef struct ClasseTime{
-    char nome[500];
-    char apelido[500];
-    char estadio[500];
-    char tecnico[500];
-    char liga[500];
-    char nomeArquivo[500];
+    char nome[TAM_ATRIBUTO];
+    char apelido[TAM_ATRIBUTO];
+    char estadio[TAM_ATRIBUTO];
+    char tecnico[TAM_ATRIBUTO];
+    char liga[TAM_ATRIBUTO];
+    char nomeArquivo[TAM_ATRIBUTO];
 
-    char datas[500];
+    char datas[TAM_ATRIBUTO];
 
     int capacidade;
     int fundacaoDia;
@@ -69,7 +73,7 @@ char* lerEntreAspas(char linhaCompleta[], int inicio){
     bool leituraParenteses = false;
 
     int contadorPosicao = 0;
-    char fraseFiltrada[3000];
+    char fraseFiltrada[TAM_LINHA];
 
     for (int i = inicio; i < strlen(linhaCompleta); i++)
     {
@@ -106,7 +110,7 @@ char* lerEntreAspasAteTD(char linhaCompleta[], int inicio){
     bool leituraParenteses = false;
 
     int contadorPosicao = 0;
-    char fraseFiltrada[3000];
+    char fraseFiltrada[TAM_LINHA];
 
     for (int i = inicio; i < strlen(linhaCompleta)-3; i++)
     {
@@ -146,8 +150,6 @@ char* lerAPartirDaClasse(char linhaCompleta[]){
 
     // printf("\nTag recebida: %s \n", linhaCompleta);
 
-
-
     //buscar o fim da tag
     for(int i = 0; i < strlen(linhaCompleta); i++){
         //ignorar se achar um <i> no meio
@@ -162,8 +164,8 @@ char* lerAPartirDaClasse(char linhaCompleta[]){
         }
     }
     //arranjo com a resposta com memset
-    char *resposta = (char*)malloc(5000);
-    memset(resposta, '\0', 5000);
+    char *resposta = (char*)malloc(TAM_LINHA);
+    memset(resposta, '\0', TAM_LINHA);
 
     int contadorPos = 0;
 
@@ -194,8 +196,8 @@ char* lerAPartirDaClasse(char linhaCompleta[]){
 char* pegarNome(char linhaCompleta[]){
 
     char busca[] = "Full name";
-    char* resposta  = (char*) malloc(500);
-    memset(resposta, '\0', 500);
+    char* resposta  = (char*) malloc(TAM_ATRIBUTO);
+    memset(resposta, '\0', TAM_ATRIBUTO);
 
     strcpy(resposta, lerEntreAspasAteTD(substring(busca, linhaCompleta), strlen(busca)));
     //printf("\n Resposta eh %s\n", resposta);
@@ -241,8 +243,8 @@ char* pegarNome(char linhaCompleta[]){
 
 char* pegarApelido(char linhaCompleta[]){
     char busca[] = "nickname";
-    char* resposta  = (char*) malloc(500);
-    memset(resposta, '\0', 500);
+    char* resposta  = (char*) malloc(TAM_ATRIBUTO);
+    memset(resposta, '\0', TAM_ATRIBUTO);
 
     strcpy(resposta, lerAPartirDaClasse(substring(busca, linhaCompleta)));
     //printf("\n Resposta eh %s\n", resposta);
@@ -252,8 +254,8 @@ char* pegarApelido(char linhaCompleta[]){
 
 char* pegarEstadio(char linhaCompleta[]){
     char busca[] = "Ground";
-    char* resposta  = (char*) malloc(500);
-    memset(resposta, '\0', 500);
+    char* resposta  = (char*) malloc(TAM_ATRIBUTO);
+    memset(resposta, '\0', TAM_ATRIBUTO);
 
     strcpy(resposta, lerEntreAspasAteTD(substring(busca, linhaCompleta), strlen(busca)));
     //printf("\n Resposta eh %s\n", resposta);
@@ -264,8 +266,8 @@ char* pegarEstadio(char linhaCompleta[]){
 
 char* pegarLiga(char linhaCompleta[]){
     char busca[] = "League";
-    char* resposta = (char*)malloc(150);
-    memset(resposta, '\0', 150);
+    char* resposta = (char*)malloc(TAM_ATRIBUTO);
+    memset(resposta, '\0', TAM_ATRIBUTO);
     strcpy(resposta, lerEntreAspasAteTD(substring(busca, linhaCompleta), strlen(busca)) );
     //printf("\nCheguei e sai da funcao pegarLiga com sucesso.\n");
     return (resposta);
@@ -273,26 +275,30 @@ char* pegarLiga(char linhaCompleta[]){
 
 char* pegarTecnico(char linhaCompleta[]){
     //printf("\nCheguei na funcao de pegar tecnico. \n");
-    char* resposta = (char*)malloc(150);
+    char* resposta = (char*)malloc(TAM_ATRIBUTO);
     char busca[] = "Coach";
     char busca2[]= "Head coach";
+    char* tmp = NULL;
 
     // procura o head coach
     if(strstr(linhaCompleta, (char*) busca2) != 0){
-        strcpy(resposta ,lerEntreAspas(substring(busca2, linhaCompleta), strlen(busca2)) );
-        free(lerEntreAspas(substring(busca2, linhaCompleta), strlen(busca2)) );
+        tmp = lerEntreAspas(substring(busca2, linhaCompleta), strlen(busca2));
+        strcpy(resposta , tmp);
+        delete(tmp);
     }
 
         //verificar se nao tem tecnico mesmo
     else if(strstr(linhaCompleta, (char*) busca) == 0){
         // se nao tiver Coach procurar por manager
-        strcpy(resposta, pegarManager(linhaCompleta));
-        free(pegarManager(linhaCompleta));
+        tmp = pegarManager(linhaCompleta);
+        strcpy(resposta, tmp);
+        delete(tmp);
     }
 
     else{
-        strcpy(resposta , lerEntreAspas(substring(busca, linhaCompleta), strlen(busca)) );
-        free(lerEntreAspas(substring(busca, linhaCompleta), strlen(busca)));
+        tmp = lerEntreAspas(substring(busca, linhaCompleta), strlen(busca));
+        strcpy(resposta , tmp);
+        delete(tmp);
     }
 
     //printf("\nCheguei e sai da funcao PegarCoach com sucesso. saida: %s\n", resposta);
@@ -301,11 +307,12 @@ char* pegarTecnico(char linhaCompleta[]){
 
 char* pegarManager(char linhaCompleta[]){
     char busca[] = "Manager";
-    char* resp = (char*) malloc(150);
-    memset(resp, '\0', 150);
-
-    strcpy(resp, lerEntreAspas(substring(busca, linhaCompleta), strlen(busca)));
-    free(lerEntreAspas(substring(busca, linhaCompleta), strlen(busca)));
+    char* resp = (char*) malloc(TAM_ATRIBUTO);
+    char* tmp = NULL;
+    memset(resp, '\0', TAM_ATRIBUTO);
+    tmp = lerEntreAspas(substring(busca, linhaCompleta), strlen(busca));
+    strcpy(resp, tmp );
+    delete(tmp);
 
     return (resp);
 }
@@ -313,17 +320,20 @@ char* pegarManager(char linhaCompleta[]){
 char* pegarData(char linhaCompleta[]){
     char busca[] = "bday";
     char busca2[] = "Founded";
-    char* resposta = (char*)malloc(150);
-    memset(resposta, '\0', 150);
+    char* tmp = NULL;
+    char* resposta = (char*)malloc(TAM_DATA);
+    memset(resposta, '\0', TAM_DATA);
 
     //ver se tem bday. Se nao tiver procura Founded
     if(strstr(linhaCompleta, (char*)busca) != 0){
-       strcpy(resposta , lerAPartirDaClasse(substring(busca, linhaCompleta)));
-       free(lerAPartirDaClasse(substring(busca, linhaCompleta)));
+       tmp =  lerAPartirDaClasse(substring(busca, linhaCompleta));
+       strcpy(resposta ,tmp);
+       delete(tmp);
     }
     else{
-        strcpy(resposta , lerEntreAspas(substring(busca2, linhaCompleta), strlen(busca2)));
-        free(lerEntreAspas(substring(busca2, linhaCompleta), strlen(busca2)));
+        tmp =  lerEntreAspas(substring(busca2, linhaCompleta), strlen(busca2));
+        strcpy(resposta ,tmp);
+        delete(tmp);
     }
 
     //printf("\nCheguei e sai da funcao pegarData com sucesso.\n");
@@ -348,7 +358,7 @@ char* pegarData(char linhaCompleta[]){
             respostaFiltrada[i] = resposta[i];
     }
     //printf("\nResposta filtrada bugadona: %s\n", respostaFiltrada);
-    free(resposta);
+    delete(resposta);
     return strdup(respostaFiltrada);
 }
 
@@ -409,6 +419,7 @@ int* filtrarData(char linhaOriginal[]){
     }
     
     datas = splitarData(stringSemiLimpa);
+    delete(stringSemiLimpa);
     
 return datas;
 
@@ -430,7 +441,7 @@ int* splitarData(char linha[]){
             i++; 
             p = strtok (NULL, "- ");
         }
-        free(frase);
+        delete(frase);
         }
     //se for apenas ano
     else
@@ -450,7 +461,7 @@ int pegarCapacidade(char linhaCompleta[]){
 
     //printf("\nCheguei em capacidade.\n");
     char busca[] = "Capacity";
-    char* resposta = (char*) malloc(500);
+    char* resposta = (char*) malloc(TAM_ATRIBUTO);
     memset(resposta, '\0', sizeof(resposta));
 
     strcpy(resposta, lerEntreAspas(substring(busca, linhaCompleta), strlen(busca) ));
@@ -469,9 +480,9 @@ int pegarCapacidade(char linhaCompleta[]){
 
 //converte string pra int
     //printf("\nCheguei e sai da funcao PegarCapacidade com sucesso.\n");
-    free(resposta);
+    delete(resposta);
     int capacidade = atoi(aux);
-    free(aux);
+    delete(aux);
     return capacidade;
 }
 
@@ -486,7 +497,7 @@ long pegarTamanhoPag(char arquivo[]){
 
     fseek(f, 0, SEEK_SET); // seek back to beginning of file
     fclose(f);
-    //free(f);    
+    //delete(f);    
     //printf("\nCheguei e sai da funcao pegarTamanhoPag com sucesso.\n");
     return size;
 }
@@ -522,7 +533,7 @@ char* lerArquivo(char endereco[]){
         strcat(aux, linha);
     }
     
-   // free(linha);
+   // delete(linha);
     fclose(arquivo);
     return (aux);
 
@@ -551,7 +562,7 @@ char *replaceWord(const char *s, const char *oldW, const char *newW)
   
     // Making new string of enough length 
     //result = (char *)malloc(i + cnt * (newWlen - oldWlen) + 1); 
-    result = (char *)malloc(8000); 
+    result = (char *)malloc(TAM_LINHA); 
 
     i = 0; 
     while (*s) 
@@ -675,7 +686,7 @@ char* substring (char padrao[], char entrada[]){
     else
         printf("\nALERTA! PONTEIRO NULO No padrão de ENTRADA %s\n", padrao);
 
-    printf("strdupp=======  %s \n", pointer);
+    //printf("strdupp=======  %s \n", pointer);
 
     return pointer;
 }
@@ -684,7 +695,7 @@ Metodo recebe o nome do arquivo, le ele, retira a string e a filtra, retornando 
 */
 char* filtrarString(char arquivo[]){
 
-    char* linhaOriginal = (char*) malloc(5000);
+    char* linhaOriginal = (char*) malloc(TAM_LINHA);
     memset(linhaOriginal, '\0', sizeof(*linhaOriginal));
 
     // guardar o conteudo da linha do arquivo
@@ -711,19 +722,19 @@ char* filtrarString(char arquivo[]){
     if(strstr(linhaOriginal, troca1) != 0){
         temp = replaceWord(stringSemiLimpa, troca1, subst);
 
-        memset(stringSemiLimpa, 0, strlen(stringSemiLimpa));
+        memset(stringSemiLimpa, '\0', strlen(stringSemiLimpa));
         strcpy(stringSemiLimpa , temp);
         
-        //free(temp);
+        //delete(temp);
     }
         
     if(strstr(linhaOriginal, troca2) != 0){
         temp = replaceWord(stringSemiLimpa, troca2, subst);
 
-        memset(stringSemiLimpa, 0, strlen(stringSemiLimpa));
+        memset(stringSemiLimpa, '\0', strlen(stringSemiLimpa));
         strcpy(stringSemiLimpa , temp);
         
-        //free(temp);
+        //delete(temp);
     }
        
     if(strstr(linhaOriginal, troca3) != 0){
@@ -732,7 +743,7 @@ char* filtrarString(char arquivo[]){
         memset(stringSemiLimpa, '\0', strlen(stringSemiLimpa));
         strcpy(stringSemiLimpa , temp);
         
-        //free(temp);
+        //delete(temp);
     }   
 
     if(strstr(linhaOriginal, troca4) != 0){
@@ -741,7 +752,7 @@ char* filtrarString(char arquivo[]){
         memset(stringSemiLimpa, '\0', strlen(stringSemiLimpa));
         strcpy(stringSemiLimpa , temp);
         
-        //free(temp);
+        //delete(temp);
     }
     if(strstr(linhaOriginal, troca5) != 0){
         temp = replaceWord(stringSemiLimpa, troca5, subst);
@@ -749,7 +760,7 @@ char* filtrarString(char arquivo[]){
         memset(stringSemiLimpa, '\0', strlen(stringSemiLimpa));
         strcpy(stringSemiLimpa , temp);
         
-        //free(temp);
+        //delete(temp);
     }
         
     /*
@@ -759,7 +770,7 @@ char* filtrarString(char arquivo[]){
         memset(stringSemiLimpa, '\0', strlen(stringSemiLimpa));
         strcpy(stringSemiLimpa , temp);
 
-        free(temp);
+        delete(temp);
     }
       */  
 
@@ -792,31 +803,31 @@ Time* construtor( char arquivo[]){
     stringTmp = filtrarString(arquivo);
     strcat(linhaCompleta, stringTmp);
     
-    //free(stringTmp);
+    //delete(stringTmp);
 
     stringTmp = pegarNome(linhaCompleta);
     strcpy(ptr->nome, stringTmp);
-    free(stringTmp);
+    delete(stringTmp);
 
     stringTmp = pegarApelido(linhaCompleta);
     strcpy(ptr->apelido, stringTmp );
-    free(stringTmp);
+    delete(stringTmp);
 
     stringTmp = pegarEstadio(linhaCompleta);
     strcpy(ptr->estadio, stringTmp);
-    free(stringTmp);
+    delete(stringTmp);
 
     stringTmp = pegarData(linhaCompleta);
     strcpy(ptr->datas, stringTmp);
-    free(stringTmp);
+    delete(stringTmp);
 
     stringTmp = pegarLiga(linhaCompleta);
     strcpy(ptr->liga, stringTmp);
-    free(stringTmp);
+    delete(stringTmp);
     
     stringTmp = pegarTecnico(linhaCompleta);
     strcpy(ptr->tecnico, stringTmp );
-    free(stringTmp);
+    delete(stringTmp);
 
 
     int* datas = filtrarData(pegarData(linhaCompleta));
@@ -828,7 +839,7 @@ Time* construtor( char arquivo[]){
     ptr->capacidade = pegarCapacidade(linhaCompleta);
 
     //limpar char* alocado com malloc
-    free(linhaCompleta);
+    delete(linhaCompleta);
     return ptr;
 }
 
@@ -925,16 +936,16 @@ int main(){
         conjuntoTimes[i] = construtor(entradaTimes[i]);
         conjuntoTimes[i]->imprimir();
         printf("Entrada numero %d impressa com sucesso\n\n", i);
-        //free(conjuntoTimes[i]);
+        //delete(conjuntoTimes[i]);
     }
-    /*
+    
     int tam = sizeof(conjuntoTimes)/sizeof(conjuntoTimes[0]);
 
     int comparacoes = recurSelectionSort(conjuntoTimes, tam);
 
     for (int i = 0; i < quantidadeEntradas; i++)
     {
-        conjuntoTimes[i]->imprimir;
+        conjuntoTimes[i]->imprimir();
     }
     
     time_t final = time(NULL);
@@ -945,5 +956,5 @@ int main(){
     fprintf(arq, "%d\t" ,comparacoes);
     fprintf(arq, "%ld\t" ,tempo);
     fclose(arq);
-    */
+    
 }
