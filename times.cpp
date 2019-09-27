@@ -319,13 +319,13 @@ char* pegarData(char linhaCompleta[]){
 
     // agora que tenho a resposta, preciso filtrá-la. O ideal é parar depois que achar algum char que não seja letra, dia ou traço
     char respostaFiltrada[strlen(resposta)];
-    //printf("\nResposta nao filtrada: %s\n", resposta);
+    printf("\nResposta nao filtrada: %s\n", resposta);
 
     for(int i = 0; i < strlen(resposta); i++){
         bool ehLetra = (resposta[i] >= 'a' && resposta[i] <= 'z') || (resposta[i] >= 'A' && resposta[i] <= 'Z');
         bool ehNum = resposta[i] >= '0' && resposta[i] <= '9';
 
-        bool continuar = ehLetra || ehNum || resposta[i] == '-' || resposta[i] == ' ';
+        bool continuar = ehLetra || ehNum || resposta[i] == '-' || resposta[i] == ' ' || resposta[i] == ',';
         
         if(!continuar){
             //printf("\nChar de parada: %c\n", resposta[i]);
@@ -338,6 +338,7 @@ char* pegarData(char linhaCompleta[]){
     }
     //printf("\nResposta filtrada bugadona: %s\n", respostaFiltrada);
     delete(resposta);
+    //printf("Resposta filtrada: %s \n", respostaFiltrada);
     return strdup(respostaFiltrada);
 }
 
@@ -396,7 +397,7 @@ int* filtrarData(char linhaOriginal[]){
         stringSemiLimpa =  replaceWord(stringSemiLimpa, (char*) "December", (char*) "-12-");   
  
     }
-    
+    printf("String semi limpa com substituicoes: %s \n", stringSemiLimpa);
     datas = splitarData(stringSemiLimpa);
     delete(stringSemiLimpa);
     
@@ -471,7 +472,7 @@ long pegarTamanhoPag(char arquivo[]){
 
     fseek(f, 0, SEEK_END); // seek to end of file
     long size = ftell(f); // get current file pointer
-    printf("Li o tamanho. Tamanho: %ld\n", size);
+    //printf("Li o tamanho. Tamanho: %ld\n", size);
     
 
     fseek(f, 0, SEEK_SET); // seek back to beginning of file
