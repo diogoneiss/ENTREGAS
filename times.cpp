@@ -319,7 +319,7 @@ char* pegarData(char linhaCompleta[]){
 
     // agora que tenho a resposta, preciso filtrá-la. O ideal é parar depois que achar algum char que não seja letra, dia ou traço
     char respostaFiltrada[strlen(resposta)];
-    printf("\nResposta nao filtrada: %s\n", resposta);
+    //printf("\nResposta nao filtrada: %s\n", resposta);
 
     for(int i = 0; i < strlen(resposta); i++){
         bool ehLetra = (resposta[i] >= 'a' && resposta[i] <= 'z') || (resposta[i] >= 'A' && resposta[i] <= 'Z');
@@ -397,7 +397,7 @@ int* filtrarData(char linhaOriginal[]){
         stringSemiLimpa =  replaceWord(stringSemiLimpa, (char*) "December", (char*) "-12-");   
  
     }
-    printf("String semi limpa com substituicoes: %s \n", stringSemiLimpa);
+    //printf("String semi limpa com substituicoes: %s \n", stringSemiLimpa);
     datas = splitarData(stringSemiLimpa);
     delete(stringSemiLimpa);
     
@@ -424,9 +424,11 @@ int* splitarData(char linha[]){
         delete(frase);
         }
     //se for apenas ano
-    else
+    else{
         datas[2] = atoi(linha);
-
+        datas[1] = 0;
+        datas[0] = 0;
+    }
     //verificar inversoes
     if(datas[0] > 31){
         int aux = datas[0];
@@ -467,7 +469,7 @@ int pegarCapacidade(char linhaCompleta[]){
 }
 
 long pegarTamanhoPag(char arquivo[]){
-    printf("Arquivo atual: %s\n", arquivo);
+    //printf("Arquivo atual: %s\n", arquivo);
     FILE *f = fopen(arquivo, "rb");
 
     fseek(f, 0, SEEK_END); // seek to end of file
@@ -693,8 +695,8 @@ char* filtrarString(char arquivo[]){
     char* temp = NULL;
 
     //alocacao da string de resposta
-    char* stringSemiLimpa = (char*) malloc(strlen(linhaOriginal));
-    memset(stringSemiLimpa, 0, strlen(linhaOriginal));
+    char* stringSemiLimpa = (char*) malloc(TAM_LINHA);
+    memset(stringSemiLimpa, '\0', TAM_LINHA);
 
     strcpy(stringSemiLimpa, linhaOriginal);
 
@@ -702,7 +704,7 @@ char* filtrarString(char arquivo[]){
     if(strstr(linhaOriginal, troca1) != 0){
         temp = replaceWord(stringSemiLimpa, troca1, subst);
 
-        memset(stringSemiLimpa, '\0', strlen(stringSemiLimpa));
+        memset(stringSemiLimpa, '\0', TAM_LINHA);
         strcpy(stringSemiLimpa , temp);
         
         //delete(temp);
@@ -711,7 +713,7 @@ char* filtrarString(char arquivo[]){
     if(strstr(linhaOriginal, troca2) != 0){
         temp = replaceWord(stringSemiLimpa, troca2, subst);
 
-        memset(stringSemiLimpa, '\0', strlen(stringSemiLimpa));
+        memset(stringSemiLimpa, '\0', TAM_LINHA);
         strcpy(stringSemiLimpa , temp);
         
         //delete(temp);
@@ -720,7 +722,7 @@ char* filtrarString(char arquivo[]){
     if(strstr(linhaOriginal, troca3) != 0){
         temp = replaceWord(stringSemiLimpa, troca3, subst);
 
-        memset(stringSemiLimpa, '\0', strlen(stringSemiLimpa));
+        memset(stringSemiLimpa, '\0', TAM_LINHA);
         strcpy(stringSemiLimpa , temp);
         
         //delete(temp);
@@ -729,7 +731,7 @@ char* filtrarString(char arquivo[]){
     if(strstr(linhaOriginal, troca4) != 0){
         temp = replaceWord(stringSemiLimpa, troca4, subst);
 
-        memset(stringSemiLimpa, '\0', strlen(stringSemiLimpa));
+        memset(stringSemiLimpa, '\0', TAM_LINHA);
         strcpy(stringSemiLimpa , temp);
         
         //delete(temp);
@@ -737,7 +739,7 @@ char* filtrarString(char arquivo[]){
     if(strstr(linhaOriginal, troca5) != 0){
         temp = replaceWord(stringSemiLimpa, troca5, subst);
 
-        memset(stringSemiLimpa, '\0', strlen(stringSemiLimpa));
+        memset(stringSemiLimpa, '\0', TAM_LINHA);
         strcpy(stringSemiLimpa , temp);
         
         //delete(temp);
@@ -754,6 +756,7 @@ char* filtrarString(char arquivo[]){
     }
       */  
 
+    delete(linhaOriginal);
     return (stringSemiLimpa);
 }
 
@@ -765,7 +768,7 @@ Time* construtor( char arquivo[]){
 
     // alocacoes de memoria
     Time* ptr = (Time*) malloc(sizeof(Time));
-    char* linhaCompleta= (char*) malloc(10000);
+    char* linhaCompleta= (char*) malloc(TAM_LINHA);
     //char* tmp = (char*) malloc(sizeof(linhaCompleta));
     char* stringTmp = NULL;
 
@@ -914,8 +917,8 @@ int main(){
 
         // alocar memoria, atribuir atributos com a funcao construtor e imprimir
         conjuntoTimes[i] = construtor(entradaTimes[i]);
-        conjuntoTimes[i]->imprimir();
-        printf("Entrada numero %d impressa com sucesso\n", i);
+        //conjuntoTimes[i]->imprimir();
+       // printf("Entrada numero %d impressa com sucesso\n", i);
         //delete(conjuntoTimes[i]);
     }
     
