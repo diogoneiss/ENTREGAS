@@ -198,45 +198,13 @@ char* pegarNome(char linhaCompleta[]){
     char busca[] = "Full name";
     char* resposta  = (char*) malloc(TAM_ATRIBUTO);
     memset(resposta, '\0', TAM_ATRIBUTO);
+    char* tmp = NULL;
+    tmp = lerEntreAspasAteTD(substring(busca, linhaCompleta), strlen(busca));
 
-    strcpy(resposta, lerEntreAspasAteTD(substring(busca, linhaCompleta), strlen(busca)));
+    strcpy(resposta, tmp);
+    delete(tmp);
     //printf("\n Resposta eh %s\n", resposta);
     //printf("\nCheguei e sai da funcao PegarNome com sucesso.\n");
-    
-    bool tagAchada = false;
-    bool leituraParenteses = false;
-
-    int contadorPosicao = 0;
-    char fraseFiltrada[3000];
-
-/*
-    for (int i = 0; i < strlen(linhaCompleta); i++)
-    {
-        //significa que achou uma tag e está no meio da leitura dela
-        if(!leituraParenteses && !tagAchada && linhaCompleta[i] == '<')
-            tagAchada = true;
-
-            //siginifica que acabou a tag
-        else if(!leituraParenteses && tagAchada && linhaCompleta[i] == '>')
-            tagAchada = false;
-
-            //leitura apos
-        else if(!tagAchada){
-            //sair se achar o <
-            if(linhaCompleta[i] == '<' && linhaCompleta[i+2] != '>' && linhaCompleta[i+1] != '>' ){
-                //printf("Fim da string aqui! %c", linhaCompleta[i]);
-                fraseFiltrada[contadorPosicao] = '\0';
-                i = strlen(linhaCompleta);
-            }
-
-            else{
-                fraseFiltrada[contadorPosicao] = linhaCompleta[i];
-                contadorPosicao++;
-                leituraParenteses = true;
-            }
-        }
-        
-    }*/
     
     return (resposta);
 }
@@ -245,8 +213,11 @@ char* pegarApelido(char linhaCompleta[]){
     char busca[] = "nickname";
     char* resposta  = (char*) malloc(TAM_ATRIBUTO);
     memset(resposta, '\0', TAM_ATRIBUTO);
+    char* tmp = NULL;
+    tmp = lerAPartirDaClasse(substring(busca, linhaCompleta));
 
-    strcpy(resposta, lerAPartirDaClasse(substring(busca, linhaCompleta)));
+    strcpy(resposta, tmp);
+    delete(tmp);
     //printf("\n Resposta eh %s\n", resposta);
     //printf("\nCheguei e sai da funcao pegarApelido com sucesso.\n");
     return (resposta);
@@ -256,8 +227,12 @@ char* pegarEstadio(char linhaCompleta[]){
     char busca[] = "Ground";
     char* resposta  = (char*) malloc(TAM_ATRIBUTO);
     memset(resposta, '\0', TAM_ATRIBUTO);
+    char* tmp = NULL;
+    tmp = lerEntreAspasAteTD(substring(busca, linhaCompleta), strlen(busca));
 
-    strcpy(resposta, lerEntreAspasAteTD(substring(busca, linhaCompleta), strlen(busca)));
+    strcpy(resposta, tmp);
+    delete(tmp);
+
     //printf("\n Resposta eh %s\n", resposta);
     //printf("\nCheguei e sai da funcao pegarEstadio com sucesso.\n");
     return (resposta);
@@ -268,7 +243,11 @@ char* pegarLiga(char linhaCompleta[]){
     char busca[] = "League";
     char* resposta = (char*)malloc(TAM_ATRIBUTO);
     memset(resposta, '\0', TAM_ATRIBUTO);
-    strcpy(resposta, lerEntreAspasAteTD(substring(busca, linhaCompleta), strlen(busca)) );
+
+    char* tmp = NULL;
+    tmp = lerEntreAspasAteTD(substring(busca, linhaCompleta), strlen(busca));
+    strcpy(resposta, tmp );
+    delete(tmp);
     //printf("\nCheguei e sai da funcao pegarLiga com sucesso.\n");
     return (resposta);
 }
@@ -696,7 +675,7 @@ Metodo recebe o nome do arquivo, le ele, retira a string e a filtra, retornando 
 char* filtrarString(char arquivo[]){
 
     char* linhaOriginal = (char*) malloc(TAM_LINHA);
-    memset(linhaOriginal, '\0', sizeof(*linhaOriginal));
+    memset(linhaOriginal, '\0', TAM_LINHA);
 
     // guardar o conteudo da linha do arquivo
     strcpy(linhaOriginal, lerArquivo(arquivo));
@@ -801,7 +780,7 @@ Time* construtor( char arquivo[]){
     // armazenar em linha completa a linha toda com o "vcard"
     //strcpy(linhaCompleta, lerArquivo(arquivo));
     stringTmp = filtrarString(arquivo);
-    strcat(linhaCompleta, stringTmp);
+    strcpy(linhaCompleta, stringTmp);
     
     //delete(stringTmp);
 
@@ -935,7 +914,7 @@ int main(){
         // alocar memoria, atribuir atributos com a funcao construtor e imprimir
         conjuntoTimes[i] = construtor(entradaTimes[i]);
         conjuntoTimes[i]->imprimir();
-        printf("Entrada numero %d impressa com sucesso\n\n", i);
+        printf("Entrada numero %d impressa com sucesso\n", i);
         //delete(conjuntoTimes[i]);
     }
     
