@@ -232,7 +232,13 @@ class ListaFlexDupla {
         return quicksort(0, this.tamanho()-1);
     }
 
-    // versao recursiva
+    /**
+     * Versão recursiva do quicksort, a ser chamado por uma funcao sobrecarregada acima, sem parâmeteos
+     * @param esq = limite na esquerda do quicksort
+     * @param dir = limite na direita do quicksort
+     * @return número de comparações entre apelidos dos times realizadas
+     * @throws Exception com problemas no getApelido(), que não devem ocorrer de forma alguma.
+     */
     public int quicksort(int esq, int dir) throws Exception{
         int comparacoes = 0;
         int i = esq, j = dir;
@@ -246,24 +252,27 @@ class ListaFlexDupla {
         while (i <= j) {
 
             // os dois fors abaixo são a versao lista dupla de "while (array[j] > pivo) j--;"
-            for(CelulaDupla tmp = this.elementoNaPosicao(i); tmp.elemento.getApelido().compareTo(pivo.elemento.getApelido()) < 0; tmp = tmp.prox, i = i+1, comparacoes++);
-            for(CelulaDupla tmp = this.elementoNaPosicao(j); tmp.elemento.getApelido().compareTo(pivo.elemento.getApelido()) > 0; tmp = tmp.ant, j = j-1, comparacoes++);
+
+            String apelidoPivo = pivo.elemento.getApelido();
+
+            for(CelulaDupla tmp = this.elementoNaPosicao(i); tmp.elemento.getApelido().compareTo(apelidoPivo) < 0; tmp = tmp.prox, i = i+1, comparacoes++);
+            for(CelulaDupla tmp = this.elementoNaPosicao(j); tmp.elemento.getApelido().compareTo(apelidoPivo) > 0; tmp = tmp.ant, j = j-1, comparacoes++);
 
             // add as duas comparacoes nao contabilizadas
             comparacoes += 2;
 
             if (i <= j) {
-                MyIO.println("Swappando i e j, nas posicoes "+i + " "+j);
+                System.out.println("Swappando i e j, nas posicoes "+i + " "+j);
                 swap(i, j);
                 i++;
                 j--;
             }
         }
         //chamadas recursivas
-        if (esq < j)
-            comparacoes += quicksort(esq, j);
+        if (j > esq)
+            comparacoes += quicksort(esq, j+1);
         if (i < dir)
-            comparacoes += quicksort(i, dir);
+            comparacoes += quicksort(i, dir-1);
 
         return comparacoes;
     }
@@ -271,15 +280,7 @@ class ListaFlexDupla {
     public void swap(int pos1, int pos2) throws Exception{
         
         TimeListaDuplaQuicksort tmp = elementoNaPosicao(pos1).elemento;
-        
-        MyIO.println("Armazenando o elemento tmp de pos1. Printando tmp");
-        tmp.imprimir();
-
         elementoNaPosicao(pos1).elemento = elementoNaPosicao(pos2).elemento;
-
-        MyIO.println("Armazenando o elemento pos1, vindo de pos2. Printando pos2");
-        elementoNaPosicao(pos2).elemento.imprimir();
-
         elementoNaPosicao(pos2).elemento = tmp;
 
     }
