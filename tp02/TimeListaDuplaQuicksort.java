@@ -56,6 +56,8 @@ class ListaFlexDupla {
         for(int j = 0; j < pos; j++, i = i.prox);
 
         resp = i;
+        MyIO.println("Elemento na posicao "+pos+"= "+i.elemento.getNomeArquivo());
+
 
         return resp;
     }
@@ -195,8 +197,9 @@ class ListaFlexDupla {
         int j = 0;
 
         for (CelulaDupla i = primeiro.prox; i != null; i = i.prox, j++) {
-            System.out.printf("[%d] ", j);
-            i.elemento.imprimir();
+            //System.out.printf("[%d] ", j);
+            //i.elemento.imprimir();
+            MyIO.println(i.elemento.getApelido());
         }
     }
 
@@ -241,13 +244,15 @@ class ListaFlexDupla {
      */
     public int quicksort(int esq, int dir) throws Exception{
         int comparacoes = 0;
+       
+
         int i = esq, j = dir;
-        System.out.printf("Posicao atual de esq e dir: %d e %d.\n", esq, dir);
+        //System.out.printf("Posicao atual de esq e dir: %d e %d.\n", esq, dir);
 
         CelulaDupla pivo = primeiro;
 
         //movimentar o pivo pra mediana
-        for(int k = 0; k < (dir+esq)/2 && pivo.prox != null; pivo = pivo.prox);
+        for(int k = 0; k < (dir+esq)/2 && pivo.prox != null; k++, pivo = pivo.prox);
 
         while (i <= j) {
 
@@ -255,14 +260,14 @@ class ListaFlexDupla {
 
             String apelidoPivo = pivo.elemento.getApelido();
 
-            for(CelulaDupla tmp = this.elementoNaPosicao(i); tmp.elemento.getApelido().compareTo(apelidoPivo) < 0; tmp = tmp.prox, i = i+1, comparacoes++);
-            for(CelulaDupla tmp = this.elementoNaPosicao(j); tmp.elemento.getApelido().compareTo(apelidoPivo) > 0; tmp = tmp.ant, j = j-1, comparacoes++);
+            for(CelulaDupla tmp = this.elementoNaPosicao(i); tmp.elemento.getApelido().compareTo(apelidoPivo) < 0; tmp = tmp.prox, ++i, comparacoes++);
+            for(CelulaDupla tmp = this.elementoNaPosicao(j); tmp.elemento.getApelido().compareTo(apelidoPivo) > 0; tmp = tmp.ant, --j, comparacoes++);
 
             // add as duas comparacoes nao contabilizadas
             comparacoes += 2;
 
             if (i <= j) {
-                System.out.println("Swappando i e j, nas posicoes "+i + " "+j);
+                //System.out.println("Swappando i e j, nas posicoes "+i + " "+j);
                 swap(i, j);
                 i++;
                 j--;
@@ -337,9 +342,9 @@ class TimeListaDuplaQuicksort {
             listaDosTimes.inserirFim(conjuntoTimes[i]);
         }
 
-        MyIO.println("Chegando no quicksort");
+       //MyIO.println("Chegando no quicksort");
         int totalComparacoes = listaDosTimes.quicksort();
-
+        
         // metodo de printar tudo
         listaDosTimes.mostrar();
 
@@ -347,7 +352,7 @@ class TimeListaDuplaQuicksort {
         long fim = new Date().getTime();
 
         long execucao = fim-inicio;
-        Arq.openWrite("649651_quicksortParcial.txt");
+        Arq.openWrite("649651_quicksort.txt");
 
         Arq.print("649651\t"+execucao+"\t"+totalComparacoes+"\t");
 
