@@ -56,7 +56,7 @@ class ListaFlexDupla {
         for(int j = 0; j < pos; j++, i = i.prox);
 
         resp = i;
-        MyIO.println("Elemento na posicao "+pos+"= "+i.elemento.getNomeArquivo());
+        //MyIO.println("Elemento na posicao "+pos+"= "+i.elemento.getNomeArquivo());
 
 
         return resp;
@@ -198,8 +198,8 @@ class ListaFlexDupla {
 
         for (CelulaDupla i = primeiro.prox; i != null; i = i.prox, j++) {
             //System.out.printf("[%d] ", j);
-            //i.elemento.imprimir();
-            MyIO.println(i.elemento.getApelido());
+            i.elemento.imprimir();
+            //MyIO.println(i.elemento.getApelido());
         }
     }
 
@@ -245,23 +245,22 @@ class ListaFlexDupla {
     public int quicksort(int esq, int dir) throws Exception{
         int comparacoes = 0;
        
-
         int i = esq, j = dir;
         //System.out.printf("Posicao atual de esq e dir: %d e %d.\n", esq, dir);
 
         CelulaDupla pivo = primeiro;
 
         //movimentar o pivo pra mediana
-        for(int k = 0; k < (dir+esq)/2 && pivo.prox != null; k++, pivo = pivo.prox);
+        for(int k = 0; k <= (dir+esq)/2; k++, pivo = pivo.prox);
 
         while (i <= j) {
 
             // os dois fors abaixo são a versao lista dupla de "while (array[j] > pivo) j--;"
 
-            String apelidoPivo = pivo.elemento.getApelido();
+            String apelidoPivo = pivo.elemento.getApelido().replace(" ", "");
 
-            for(CelulaDupla tmp = this.elementoNaPosicao(i); tmp.elemento.getApelido().compareTo(apelidoPivo) < 0; tmp = tmp.prox, ++i, comparacoes++);
-            for(CelulaDupla tmp = this.elementoNaPosicao(j); tmp.elemento.getApelido().compareTo(apelidoPivo) > 0; tmp = tmp.ant, --j, comparacoes++);
+            for(CelulaDupla tmp = this.elementoNaPosicao(i); tmp.elemento.getApelido().replace(" ", "").compareTo(apelidoPivo) < 0 && i < dir; tmp = tmp.prox, i=i+1, comparacoes++);
+            for(CelulaDupla tmp = this.elementoNaPosicao(j); tmp.elemento.getApelido().replace(" ", "").compareTo(apelidoPivo) > 0 && j > esq; tmp = tmp.ant, j=j-1, comparacoes++);
 
             // add as duas comparacoes nao contabilizadas
             comparacoes += 2;
@@ -277,7 +276,7 @@ class ListaFlexDupla {
         if (j > esq)
             comparacoes += quicksort(esq, j+1);
         if (i < dir)
-            comparacoes += quicksort(i, dir-1);
+            comparacoes += quicksort(i, dir);
 
         return comparacoes;
     }
