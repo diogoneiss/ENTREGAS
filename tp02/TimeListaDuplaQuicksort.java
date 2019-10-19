@@ -198,8 +198,8 @@ class ListaFlexDupla {
 
         for (CelulaDupla i = primeiro.prox; i != null; i = i.prox, j++) {
             //System.out.printf("[%d] ", j);
-            i.elemento.imprimir();
-            //MyIO.println(i.elemento.getApelido());
+            //i.elemento.imprimir();
+            MyIO.println(i.elemento.getApelido().charAt(0) + i.elemento.getApelido().charAt(1));
         }
     }
 
@@ -235,7 +235,7 @@ class ListaFlexDupla {
         return quicksort(0, this.tamanho()-1);
     }
 
-    /**
+    /** 
      * Versão recursiva do quicksort, a ser chamado por uma funcao sobrecarregada acima, sem parâmeteos
      * @param esq = limite na esquerda do quicksort
      * @param dir = limite na direita do quicksort
@@ -257,10 +257,30 @@ class ListaFlexDupla {
 
             // os dois fors abaixo são a versao lista dupla de "while (array[j] > pivo) j--;"
 
-            String apelidoPivo = pivo.elemento.getApelido().replace(" ", "");
+            String apelidoPivo = pivo.elemento.getApelido().trim();
+            CelulaDupla tmp = this.elementoNaPosicao(i);
 
-            for(CelulaDupla tmp = this.elementoNaPosicao(i); tmp.elemento.getApelido().replace(" ", "").compareTo(apelidoPivo) < 0 && i < dir; tmp = tmp.prox, i=i+1, comparacoes++);
-            for(CelulaDupla tmp = this.elementoNaPosicao(j); tmp.elemento.getApelido().replace(" ", "").compareTo(apelidoPivo) > 0 && j > esq; tmp = tmp.ant, j=j-1, comparacoes++);
+            while(tmp.elemento.getApelido().compareTo(apelidoPivo) < 0 && i<dir){
+
+                if(tmp.elemento.getApelido() == null || apelidoPivo == null)
+                    throw new Exception("Apelido vazio");
+
+                tmp = tmp.prox;
+                i++;
+                comparacoes++;
+
+            }
+            tmp = this.elementoNaPosicao(j);
+
+            while(tmp.elemento.getApelido().compareTo(apelidoPivo) > 0 && j > esq){
+
+                if(tmp.elemento.getApelido() == null || apelidoPivo == null)
+                    throw new Exception("Apelido vazio");
+                
+                tmp = tmp.ant;
+                j--;
+                comparacoes++;
+            }
 
             // add as duas comparacoes nao contabilizadas
             comparacoes += 2;
@@ -351,7 +371,7 @@ class TimeListaDuplaQuicksort {
         long fim = new Date().getTime();
 
         long execucao = fim-inicio;
-        Arq.openWrite("649651_quicksort.txt");
+        Arq.openWrite("649651_quicksort2.txt");
 
         Arq.print("649651\t"+execucao+"\t"+totalComparacoes+"\t");
 
@@ -627,7 +647,7 @@ class TimeListaDuplaQuicksort {
                 // Capacity
             } else if (removeTags(campo).toLowerCase().contains("capacity")) {
                 campo = campo.split("<br")[0];
-                campo = removeTags(campo.split("</td>")[0].replace(" ", ""));
+                campo = removeTags(campo.split("</td>")[0]);
                 this.capacidade = Integer.parseInt(removePunctuation(campo.substring(8).split(";")[0]));
 
                 // Coach
