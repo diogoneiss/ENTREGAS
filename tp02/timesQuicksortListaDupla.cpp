@@ -23,14 +23,14 @@ char* pegarManager(char linhaCompleta[]);
 char* substring(char padrao[], char entrada[]);
 char* replace(char retirar[], char linha[]);
 int* letraNoMeioFrase(char linhaOriginal[]);
-char *replaceWord(const char *s, const char *oldW, const char *newW); 
+char *replaceWord(const char *s, const char *oldW, const char *newW);
 int* splitarData(char linha[]);
 //fim prototipos
 
 /**
  * Objetos "time", com seus atributos e método de imprimir na tela de maneira formatada.
  * Há uma funcao de construtor pra ela, localizada lá em baixo
- 
+
  */
 typedef struct ClasseTime{
     char nome[TAM_ATRIBUTO];
@@ -71,8 +71,8 @@ typedef struct ClasseTime{
  */
 typedef struct CelulaDupla{
     Time* elemento;
-    struct CelulaDupla *prox; 
-    struct CelulaDupla *ant;   
+    struct CelulaDupla *prox;
+    struct CelulaDupla *ant;
 }Celula;
 
 // construtor da célula
@@ -94,7 +94,7 @@ typedef struct ListaDinamica{
     Celula* fim;
 
     void inserirFim(Time* adicao){
-       
+
         Celula* tmp = construtorCelula(adicao);
         tmp->ant = fim;
         fim->prox = tmp;
@@ -102,13 +102,13 @@ typedef struct ListaDinamica{
         fim->ant = fim;
         fim = tmp;
         fim->prox = NULL;
-        
+
     }
-    
+
 Time* removerFim() {
-        if (inicio == fim) 
+        if (inicio == fim)
       errx(1, "Erro ao remover!");
-   
+
 
     Time* resp = fim->elemento;
     Celula* tmp = fim;
@@ -125,7 +125,7 @@ int tamanho(){
         do{
             tam++;
             tmp = tmp->prox;
-            
+
         } while(tmp != NULL);
         //printf("Tamanho da fila aqui: %d elementos.\n", tam);
 
@@ -141,7 +141,7 @@ void mostrar(){
     {
         tmp->elemento->imprimir();
         tmp = tmp->prox;
-    }        
+    }
 }
 */
  void mostrar(){
@@ -150,43 +150,16 @@ void mostrar(){
     }
 void mostrarReq(Celula* atual){
         //printf("Cheguei na funcao recursiva.\n");
-        if(atual != NULL){    
+        if(atual != NULL){
             //chamada rec
-            printf("%s e apelido %s\n", atual->elemento->apelido,  atual->elemento->nomeArquivo);
+            printf("%s e apelido %s\n", atual->elemento->nomeArquivo,  atual->elemento->apelido);
             //atual->elemento->imprimir();
-            mostrarReq(atual->prox); 
+            mostrarReq(atual->prox);
         }
     }
-/*
-* Retorna a celula na posição pos
-* 
-*/
-Celula* elementoNaPosicao(int pos){
-     
-        int tamanho = this->tamanho();
-        //printf("Tamanho: %d", tamanho);
-
-        if(pos < 0 || pos >= tamanho)
-            printf("Erro ao remover (posicao  %d / %d invalida!", pos, tamanho);
-
-        // Caminhar ate a posicao anterior a desejada
-        Celula* i = inicio->prox;
-        
-        for(int j = 0; j < pos; j++, i = i->prox);
-
-        printf("Elemento na posicao %d = %s\n", pos, i->elemento->apelido);
 
 
-        return i;
-}
 
-//swappa dois elementos dentro de uma lista
-void swap(int pos1, int pos2){
-    Celula* tmp = elementoNaPosicao(pos1);
-
-    elementoNaPosicao(pos1)->elemento = elementoNaPosicao(pos2)->elemento;
-    elementoNaPosicao(pos2)->elemento = tmp->elemento;
-}
 
 }ListaDuplaTime;
 
@@ -194,20 +167,67 @@ void swap(int pos1, int pos2){
 ListaDuplaTime* ConstrutorListaDuplaTime(){
     //setar o num pra zero
     ListaDuplaTime* PilhaDinamica = (ListaDuplaTime*) malloc(sizeof(ListaDuplaTime));
-    
+
     PilhaDinamica->inicio = (Celula*) malloc(sizeof(Celula));
     PilhaDinamica->fim = PilhaDinamica->inicio;
-    
+
     //conexoes
     PilhaDinamica->fim->ant = PilhaDinamica->inicio;
     PilhaDinamica->inicio->prox = PilhaDinamica->fim;
     return PilhaDinamica;
 }
+
+/*
+* Retorna a celula na posição pos
+*/
+Celula* elementoNaPosicao(ListaDuplaTime* lista, int pos){
+
+        int tamanho = lista->tamanho();
+        //printf("Tamanho: %d", tamanho);
+        printf("\tPosicao que eu quero: %d\n", pos);
+
+        if(pos < 0 || pos >= tamanho)
+            printf("Erro ao remover (posicao  %d / %d invalida!", pos, tamanho);
+
+        // Caminhar ate a posicao anterior a desejada
+        Celula* i = lista->inicio->prox;
+        int j = 0;
+        
+        while(j < pos && i->prox != NULL){
+            i = i->prox;
+            j++;
+            //printf("\tCelula i na pos %d= %s\n", j, i->elemento->nome);
+        }
+
+        printf("\tElemento na posicao %d = %s\n", pos, i->elemento->nome);
+
+        return i;
+}
+
+//swappa dois elementos dentro de uma lista
+void swap(ListaDuplaTime* lista, int pos1, int pos2){
+    
+
+    Celula* celula1 = elementoNaPosicao(lista, pos1);
+    Celula* celula2 = elementoNaPosicao(lista, pos2);
+
+    Time* tmp = celula1->elemento;
+
+    printf("Time 1: %s\n", celula1->elemento->nome);
+    printf("Time 2: %s\n", celula2->elemento->nome);
+
+    celula1->elemento = celula2->elemento;
+    celula2->elemento = tmp;
+    printf("Pós swap\n");
+    printf("Time 1: %s\n", celula1->elemento->nome);
+    printf("Time 2: %s\n", celula2->elemento->nome);
+    
+}
 //metodo sobrecarregado que executa o quicksort
 // é chamado pela funcao abaixo
 int quicksort(ListaDuplaTime* lista, int esq, int dir){
     int comparacoes = 0;
-       
+
         int i = esq, j = dir;
         //System.out.printf("Posicao atual de esq e dir: %d e %d.\n", esq, dir);
 
@@ -215,16 +235,15 @@ int quicksort(ListaDuplaTime* lista, int esq, int dir){
 
         //movimentar o pivo pra mediana
         for(int k = 0; k <= (dir+esq)/2; k++, pivo = pivo->prox);
-
+        printf("TIME PIVO: %s\n", pivo->elemento->nome);
         while (i <= j) {
 
-            // os dois fors abaixo são a versao lista dupla de "while (array[j] > pivo) j--;"
-
+            // os dois while abaixo são a versao lista dupla de "while (array[j] > pivo) j--;"
             char* apelidoPivo = pivo->elemento->apelido;
-            Celula* tmp = lista->elementoNaPosicao(i);
+            Celula* tmp = elementoNaPosicao(lista, i);
 
-            while(strcmp(tmp->elemento->apelido, apelidoPivo) < 0 /* && i<dir */){
-                printf("Movimentei i\n");
+            while(strcmp(tmp->elemento->apelido, apelidoPivo) < 0  && i<dir ){
+                //printf("Movimentei i\n");
                 if(tmp->elemento->apelido == NULL || apelidoPivo == NULL)
                    err(1, "Apelido vazio");
 
@@ -233,13 +252,13 @@ int quicksort(ListaDuplaTime* lista, int esq, int dir){
                 comparacoes++;
 
             }
-            tmp = lista->elementoNaPosicao(j);
+            tmp = elementoNaPosicao(lista, j);
 
-            while(strcmp(tmp->elemento->apelido, apelidoPivo) > 0/* && j > esq*/){
+            while(strcmp(tmp->elemento->apelido, apelidoPivo) > 0 && j > esq){
 
                 if(tmp->elemento->apelido == NULL || apelidoPivo == NULL)
                     err(1, "Apelido vazio");
-                
+
                 tmp = tmp->ant;
                 j--;
                 comparacoes++;
@@ -250,14 +269,14 @@ int quicksort(ListaDuplaTime* lista, int esq, int dir){
 
             if (i <= j) {
                 //System.out.println("Swappando i e j, nas posicoes "+i + " "+j);
-                lista->swap(i, j);
+                swap(lista, i, j);
                 i++;
                 j--;
             }
         }
         //chamadas recursivas
         if (j > esq)
-            comparacoes += quicksort(lista, esq, j+1);
+            comparacoes += quicksort(lista, esq, j);
         if (i < dir)
             comparacoes += quicksort(lista, i, dir);
 
@@ -266,7 +285,7 @@ int quicksort(ListaDuplaTime* lista, int esq, int dir){
 
 //versao de chamada
 int quicksort(ListaDuplaTime* lista){
-    return quicksort(lista, 0, lista->tamanho()); 
+    return quicksort(lista, 0, lista->tamanho()-1);
 }
 
 
@@ -376,7 +395,7 @@ char* lerAPartirDaClasse(char linhaCompleta[]){
         if(linhaCompleta[i] == '<' && linhaCompleta[i+1] == '/' && linhaCompleta[i+2] == 't' && linhaCompleta[i+3] == 'd')
 
             i = strlen(linhaCompleta);
-        
+
         else if(linhaCompleta[i] == '<')
             achouTag = true;
 
@@ -406,7 +425,7 @@ char* pegarNome(char linhaCompleta[]){
     delete(tmp);
     //printf("\n Resposta eh %s\n", resposta);
     //printf("\nCheguei e sai da funcao PegarNome com sucesso.\n");
-    
+
     return (resposta);
 }
 
@@ -528,7 +547,7 @@ char* pegarData(char linhaCompleta[]){
         bool ehNum = resposta[i] >= '0' && resposta[i] <= '9';
 
         bool continuar = ehLetra || ehNum || resposta[i] == '-' || resposta[i] == ' ' || resposta[i] == ',';
-        
+
         if(!continuar){
             //printf("\nChar de parada: %c\n", resposta[i]);
             respostaFiltrada[i] = '\0';
@@ -551,19 +570,19 @@ int* filtrarData(char linhaOriginal[]){
 
     if(strstr(linhaOriginal, (char*) "January") != 0){
         stringSemiLimpa =  replaceWord(stringSemiLimpa, (char*) "January", (char*) "-01-");
-        
+
     }
     else if(strstr(linhaOriginal, (char*) "February") != 0){
         stringSemiLimpa =  replaceWord(stringSemiLimpa, (char*) "February", (char*) "-02-");
-    
+
     }
     else if(strstr(linhaOriginal, (char*) "March") != 0){
         stringSemiLimpa =  replaceWord(stringSemiLimpa, (char*) "March", (char*) "-03-");
-    
+
     }
     else if(strstr(linhaOriginal, (char*) "April") != 0){
         stringSemiLimpa =  replaceWord(stringSemiLimpa, (char*) "April", (char*) "-04-");
-    
+
     }
     else if(strstr(linhaOriginal, (char*) "May") != 0){
         stringSemiLimpa =  replaceWord(stringSemiLimpa, (char*) "May", (char*) "-05-");
@@ -594,8 +613,8 @@ int* filtrarData(char linhaOriginal[]){
 
     }
     else if(strstr(linhaOriginal, (char*) "December") != 0){
-        stringSemiLimpa =  replaceWord(stringSemiLimpa, (char*) "December", (char*) "-12-");   
- 
+        stringSemiLimpa =  replaceWord(stringSemiLimpa, (char*) "December", (char*) "-12-");
+
     }
     //printf("String semi limpa com substituicoes: %s \n", stringSemiLimpa);
     datas = splitarData(stringSemiLimpa);
@@ -609,14 +628,14 @@ int* splitarData(char linha[]){
     if(strlen(linha)> 4){
         //printf("\nString antes do split: %s\n", linha);
         char* frase = strdup(linha);
-        
+
 
         char* p = strtok(frase, "- ");
         int i = 0;
         while (p != NULL && i < 4){
             //printf("\nDatas %d = %s\n", i , p);
             datas[i] = atoi(p);
-            i++; 
+            i++;
             p = strtok (NULL, "- ");
         }
         delete(frase);
@@ -633,7 +652,7 @@ int* splitarData(char linha[]){
         datas[0] = datas[2];
         datas[2] = aux;
     }
-    
+
 return datas;
 }
 
@@ -672,11 +691,11 @@ long pegarTamanhoPag(char arquivo[]){
     fseek(f, 0, SEEK_END); // seek to end of file
     long size = ftell(f); // get current file pointer
     //printf("Li o tamanho. Tamanho: %ld\n", size);
-    
+
 
     fseek(f, 0, SEEK_SET); // seek back to beginning of file
     fclose(f);
-    //delete(f);    
+    //delete(f);
     //printf("\nCheguei e sai da funcao pegarTamanhoPag com sucesso.\n");
     return size;
 }
@@ -702,72 +721,72 @@ char* lerArquivo(char endereco[]){
         }
     }
     //jogar linha em aux
-    strcpy(aux, linha); 
+    strcpy(aux, linha);
     //se estiver com quebra de linha
-    
+
     while(!feof(arquivo) && strstr(aux, "<table style") == 0){
         fgets(linha, 10000, arquivo);
         linha[strlen(linha)-1] = ' ';
         //linha[strlen(linha)] = ' ';
         strcat(aux, linha);
     }
-    
+
    // delete(linha);
     fclose(arquivo);
     return (aux);
 
 }
-// Function to replace a string with another 
-// string 
-char *replaceWord(const char *s, const char *oldW, const char *newW) { 
-    char *result; 
-    int i, cnt = 0; 
-    int newWlen = strlen(newW); 
-    int oldWlen = strlen(oldW); 
-  
-    // Counting the number of times old word 
-    // occur in the string 
-    for (i = 0; s[i] != '\0'; i++) 
-    { 
-        if (strstr(&s[i], oldW) == &s[i]) 
-        { 
-            cnt++; 
-  
-            // Jumping to index after the old word. 
-            i += oldWlen - 1; 
-        } 
-    } 
-  
-    // Making new string of enough length 
-    //result = (char *)malloc(i + cnt * (newWlen - oldWlen) + 1); 
-    result = (char *)malloc(TAM_LINHA); 
+// Function to replace a string with another
+// string
+char *replaceWord(const char *s, const char *oldW, const char *newW) {
+    char *result;
+    int i, cnt = 0;
+    int newWlen = strlen(newW);
+    int oldWlen = strlen(oldW);
 
-    i = 0; 
-    while (*s) 
-    { 
-        // compare the substring with the result 
-        if (strstr(s, oldW) == s) 
-        { 
-            strcpy(&result[i], newW); 
-            i += newWlen; 
-            s += oldWlen; 
-        } 
+    // Counting the number of times old word
+    // occur in the string
+    for (i = 0; s[i] != '\0'; i++)
+    {
+        if (strstr(&s[i], oldW) == &s[i])
+        {
+            cnt++;
+
+            // Jumping to index after the old word.
+            i += oldWlen - 1;
+        }
+    }
+
+    // Making new string of enough length
+    //result = (char *)malloc(i + cnt * (newWlen - oldWlen) + 1);
+    result = (char *)malloc(TAM_LINHA);
+
+    i = 0;
+    while (*s)
+    {
+        // compare the substring with the result
+        if (strstr(s, oldW) == s)
+        {
+            strcpy(&result[i], newW);
+            i += newWlen;
+            s += oldWlen;
+        }
         else
-            result[i++] = *s++; 
-    } 
-  
-    result[i] = '\0'; 
-    return result; 
-} 
+            result[i++] = *s++;
+    }
+
+    result[i] = '\0';
+    return result;
+}
 
 //remover todas as ocorrencias de uma string dentro de outra
 char* replace( char retirar[],  char linha[]){
     //char* novaFrase = (char*) malloc(strlen(linha)+1);
-    
-    
+
+
     char *novaFrase = (char*) malloc(strlen(linha)+1);
     memset(novaFrase, '\0', strlen(linha)+1);
-    
+
     int contadorPosicaoFraseFinal = 0;
     int j;
 
@@ -797,14 +816,14 @@ char* replace( char retirar[],  char linha[]){
             contadorPosicaoFraseFinal++;
         }
     }
- 
+
     return (novaFrase);
 }
 
 char* substring(char frase[], int pos, int fim){
     char* novaFrase = (char*)malloc(strlen(frase)-pos +1);
     memset(novaFrase, '\0', strlen(frase) - pos +1);
-    
+
     int posReal = 0;
 
     for (int i = pos; i <= fim; i++)
@@ -812,14 +831,14 @@ char* substring(char frase[], int pos, int fim){
         novaFrase[posReal] = frase[i];
         posReal++;
     }
-    novaFrase[posReal+1] = '\0';    
+    novaFrase[posReal+1] = '\0';
     return novaFrase;
 }
 
 char* substring(char frase[], int pos){
     char* novaFrase = (char*)malloc(strlen(frase)-pos +1);
     memset(novaFrase, '\0', strlen(frase) - pos +1);
-    
+
     int posReal = 0;
 
     for (int i = pos; i < strlen(frase); i++)
@@ -827,7 +846,7 @@ char* substring(char frase[], int pos){
         novaFrase[posReal] = frase[i];
         posReal++;
     }
-    novaFrase[posReal+1] = '\0';    
+    novaFrase[posReal+1] = '\0';
     return novaFrase;
 }
 
@@ -879,34 +898,34 @@ char* filtrarString(char arquivo[]){
 
         memset(stringSemiLimpa, '\0', TAM_LINHA);
         strcpy(stringSemiLimpa , temp);
-        
+
         //delete(temp);
     }
-        
+
     if(strstr(linhaOriginal, troca2) != 0){
         temp = replaceWord(stringSemiLimpa, troca2, subst);
 
         memset(stringSemiLimpa, '\0', TAM_LINHA);
         strcpy(stringSemiLimpa , temp);
-        
+
         //delete(temp);
     }
-       
+
     if(strstr(linhaOriginal, troca3) != 0){
         temp = replaceWord(stringSemiLimpa, troca3, subst);
 
         memset(stringSemiLimpa, '\0', TAM_LINHA);
         strcpy(stringSemiLimpa , temp);
-        
+
         //delete(temp);
-    }   
+    }
 
     if(strstr(linhaOriginal, troca4) != 0){
         temp = replaceWord(stringSemiLimpa, troca4, subst);
 
         memset(stringSemiLimpa, '\0', TAM_LINHA);
         strcpy(stringSemiLimpa , temp);
-        
+
         //delete(temp);
     }
     if(strstr(linhaOriginal, troca5) != 0){
@@ -914,11 +933,11 @@ char* filtrarString(char arquivo[]){
 
         memset(stringSemiLimpa, '\0', TAM_LINHA);
         strcpy(stringSemiLimpa , temp);
-        
+
         //delete(temp);
     }
-        
-    
+
+
     if(strstr(linhaOriginal, troca6) != 0){
         temp = replaceWord(stringSemiLimpa, troca6, subst);
 
@@ -943,7 +962,7 @@ char* filtrarString(char arquivo[]){
 
         //delete(temp);
     }
-      
+
 
     delete(linhaOriginal);
     return (stringSemiLimpa);
@@ -973,7 +992,7 @@ Time* construtor(char arquivo[]){
     //strcpy(linhaCompleta, lerArquivo(arquivo));
     stringTmp = filtrarString(arquivo);
     strcpy(linhaCompleta, stringTmp);
-    
+
     //delete(stringTmp);
 
     stringTmp = pegarNome(linhaCompleta);
@@ -995,7 +1014,7 @@ Time* construtor(char arquivo[]){
     stringTmp = pegarLiga(linhaCompleta);
     strcpy(ptr->liga, stringTmp);
     delete(stringTmp);
-    
+
     stringTmp = pegarTecnico(linhaCompleta);
     strcpy(ptr->tecnico, stringTmp );
     delete(stringTmp);
@@ -1024,7 +1043,7 @@ int main(){
     //arranjo de nomes de arquivos.
     char entradaTimes[100][100];
     int quantidadeEntradas = -1;
-    
+
     do{
         quantidadeEntradas++;
         //ler até encontrar o \n
@@ -1037,7 +1056,7 @@ int main(){
     // arranjo de referencias
     Time* conjuntoTimes[quantidadeEntradas];
 
- 
+
     //TAD da Lista dupla
     ListaDuplaTime* ListaDuplaDinamicaComOsTimes = ConstrutorListaDuplaTime();
 
@@ -1047,7 +1066,7 @@ int main(){
         conjuntoTimes[i] = construtor(entradaTimes[i]);
         ListaDuplaDinamicaComOsTimes->inserirFim(conjuntoTimes[i]);
     }
-   
+
     int comparacoes = quicksort(ListaDuplaDinamicaComOsTimes);
     ListaDuplaDinamicaComOsTimes->mostrar();
 }
