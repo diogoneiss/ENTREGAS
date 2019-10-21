@@ -96,30 +96,26 @@ typedef struct ListaDinamica{
     void inserirFim(Time* adicao){
 
         Celula* tmp = construtorCelula(adicao);
-        tmp->ant = fim;
         fim->prox = tmp;
-
-        fim->ant = fim;
-        fim = tmp;
-        fim->prox = NULL;
-
+        fim->prox->ant = fim;
+        fim = fim->prox;
     }
 
-Time* removerFim() {
+    Time* removerFim() {
         if (inicio == fim)
-      errx(1, "Erro ao remover!");
+            errx(1, "Erro ao remover!");
 
 
-    Time* resp = fim->elemento;
-    Celula* tmp = fim;
-    fim = fim->ant;
-    tmp->ant = NULL;
-    free(tmp);
-    tmp = NULL;
+        Time* resp = fim->elemento;
+        Celula* tmp = fim;
+        fim = fim->ant;
+        tmp->ant = NULL;
+        free(tmp);
+        tmp = NULL;
 
-    return resp;
-}
-int tamanho(){
+        return resp;
+    }
+    int tamanho(){
         int tam = -1;
         Celula* tmp = inicio;
         do{
@@ -144,16 +140,16 @@ void mostrar(){
     }
 }
 */
- void mostrar(){
+    void mostrar(){
         Celula* i = inicio->prox;
         mostrarReq(i);
     }
-void mostrarReq(Celula* atual){
+    void mostrarReq(Celula* atual){
         //printf("Cheguei na funcao recursiva.\n");
         if(atual != NULL){
             //chamada rec
-            printf("%s e apelido %s\n", atual->elemento->nomeArquivo,  atual->elemento->apelido);
-            //atual->elemento->imprimir();
+            //printf("%s\n", atual->elemento->apelido);
+            atual->elemento->imprimir();
             mostrarReq(atual->prox);
         }
     }
@@ -182,105 +178,109 @@ ListaDuplaTime* ConstrutorListaDuplaTime(){
 */
 Celula* elementoNaPosicao(ListaDuplaTime* lista, int pos){
 
-        int tamanho = lista->tamanho();
-        //printf("Tamanho: %d", tamanho);
-        printf("\tPosicao que eu quero: %d\n", pos);
+    int tamanho = lista->tamanho();
+    //printf("Tamanho: %d", tamanho);
+    //printf("\tPosicao que eu quero: %d\n", pos);
 
-        if(pos < 0 || pos >= tamanho)
-            printf("Erro ao remover (posicao  %d / %d invalida!", pos, tamanho);
+    if(pos < 0 || pos >= tamanho)
+        printf("Erro ao remover (posicao  %d / %d invalida!", pos, tamanho);
 
-        // Caminhar ate a posicao anterior a desejada
-        Celula* i = lista->inicio->prox;
-        int j = 0;
-        
-        while(j < pos && i->prox != NULL){
-            i = i->prox;
-            j++;
-            //printf("\tCelula i na pos %d= %s\n", j, i->elemento->nome);
-        }
+    // Caminhar ate a posicao anterior a desejada
+    Celula* i = lista->inicio->prox;
+    int j = 0;
 
-        printf("\tElemento na posicao %d = %s\n", pos, i->elemento->nome);
+    while(j < pos && i->prox != NULL){
+        i = i->prox;
+        j++;
+        //printf("\tCelula i na pos %d= %s\n", j, i->elemento->nome);
+    }
 
-        return i;
+    //printf("\tElemento na posicao %d = %s\n", pos, i->elemento->nome);
+
+    return i;
 }
 
 //swappa dois elementos dentro de uma lista
 void swap(ListaDuplaTime* lista, int pos1, int pos2){
-    
+
 
     Celula* celula1 = elementoNaPosicao(lista, pos1);
     Celula* celula2 = elementoNaPosicao(lista, pos2);
 
     Time* tmp = celula1->elemento;
 
-    printf("Time 1: %s\n", celula1->elemento->nome);
-    printf("Time 2: %s\n", celula2->elemento->nome);
+    //printf("Time 1: %s\n", celula1->elemento->nome);
+   // printf("Time 2: %s\n", celula2->elemento->nome);
 
     celula1->elemento = celula2->elemento;
     celula2->elemento = tmp;
-    printf("Pós swap\n");
-    printf("Time 1: %s\n", celula1->elemento->nome);
-    printf("Time 2: %s\n", celula2->elemento->nome);
-    
+   // printf("Pós swap\n");
+   // printf("Time 1: %s\n", celula1->elemento->nome);
+    //printf("Time 2: %s\n", celula2->elemento->nome);
+
 }
 //metodo sobrecarregado que executa o quicksort
 // é chamado pela funcao abaixo
 int quicksort(ListaDuplaTime* lista, int esq, int dir){
     int comparacoes = 0;
 
-        int i = esq, j = dir;
-        //System.out.printf("Posicao atual de esq e dir: %d e %d.\n", esq, dir);
+    int i = esq, j = dir;
+    //System.out.printf("Posicao atual de esq e dir: %d e %d.\n", esq, dir);
 
-        Celula* pivo = lista->inicio;
+    Celula* pivo = lista->inicio;
 
-        //movimentar o pivo pra mediana
-        for(int k = 0; k <= (dir+esq)/2; k++, pivo = pivo->prox);
-        printf("TIME PIVO: %s\n", pivo->elemento->nome);
-        while (i <= j) {
+    //movimentar o pivo pra mediana
+    for(int k = 0; k <= (dir+esq)/2; k++, pivo = pivo->prox);
+    //printf("TIME PIVO: %s\n", pivo->elemento->nome);
+    while (i <= j) {
 
-            // os dois while abaixo são a versao lista dupla de "while (array[j] > pivo) j--;"
-            char* apelidoPivo = pivo->elemento->apelido;
-            Celula* tmp = elementoNaPosicao(lista, i);
+        // os dois while abaixo são a versao lista dupla de "while (array[j] > pivo) j--;"
+        char* apelidoPivo = pivo->elemento->apelido;
+        Celula* tmp = elementoNaPosicao(lista, i);
+        char* fraseComparada = tmp->elemento->apelido;
 
-            while(strcmp(tmp->elemento->apelido, apelidoPivo) < 0  && i<dir ){
-                //printf("Movimentei i\n");
-                if(tmp->elemento->apelido == NULL || apelidoPivo == NULL)
-                   err(1, "Apelido vazio");
+        while(strcmp(fraseComparada, apelidoPivo) < 0  /*&& i<dir */){
+            //printf("Movimentei i\n");
+            if(fraseComparada == NULL || apelidoPivo == NULL)
+                err(1, "Apelido vazio");
 
-                tmp = tmp->prox;
-                i++;
-                comparacoes++;
-
-            }
-            tmp = elementoNaPosicao(lista, j);
-
-            while(strcmp(tmp->elemento->apelido, apelidoPivo) > 0 && j > esq){
-
-                if(tmp->elemento->apelido == NULL || apelidoPivo == NULL)
-                    err(1, "Apelido vazio");
-
-                tmp = tmp->ant;
-                j--;
-                comparacoes++;
-            }
-
-            // add as duas comparacoes nao contabilizadas
-            comparacoes += 2;
-
-            if (i <= j) {
-                //System.out.println("Swappando i e j, nas posicoes "+i + " "+j);
-                swap(lista, i, j);
-                i++;
-                j--;
-            }
+            tmp = tmp->prox;
+            i++;
+            comparacoes++;
+            fraseComparada = tmp->elemento->apelido;
         }
-        //chamadas recursivas
-        if (j > esq)
-            comparacoes += quicksort(lista, esq, j);
-        if (i < dir)
-            comparacoes += quicksort(lista, i, dir);
 
-        return comparacoes;
+        tmp = elementoNaPosicao(lista, j);
+        fraseComparada = tmp->elemento->apelido;
+
+        while(strcmp(fraseComparada, apelidoPivo) > 0 /*&& j > esq*/){
+
+            if(fraseComparada == NULL || apelidoPivo == NULL)
+                err(1, "Apelido vazio");
+
+            tmp = tmp->ant;
+            j--;
+            comparacoes++;
+            fraseComparada = tmp->elemento->apelido;
+        }
+
+        // add as duas comparacoes nao contabilizadas
+        comparacoes += 2;
+
+        if (i <= j) {
+            //System.out.println("Swappando i e j, nas posicoes "+i + " "+j);
+            swap(lista, i, j);
+            i++;
+            j--;
+        }
+    }
+    //chamadas recursivas
+    if (j > esq)
+        comparacoes += quicksort(lista, esq, j+1);
+    if (i < dir)
+        comparacoes += quicksort(lista, i, dir);
+
+    return comparacoes;
 }
 
 //versao de chamada
@@ -345,7 +345,7 @@ char* lerEntreAspasAteTD(char linhaCompleta[], int inicio){
             fraseFiltrada[contadorPosicao] = '\0';
             i = strlen(linhaCompleta);
         }
-        //significa que achou uma tag e está no meio da leitura dela
+            //significa que achou uma tag e está no meio da leitura dela
         else if(!tagAchada && linhaCompleta[i] == '<')
             tagAchada = true;
             //siginifica que acabou a tag
@@ -526,9 +526,9 @@ char* pegarData(char linhaCompleta[]){
 
     //ver se tem bday. Se nao tiver procura Founded
     if(strstr(linhaCompleta, (char*)busca) != 0){
-       tmp =  lerAPartirDaClasse(substring(busca, linhaCompleta));
-       strcpy(resposta ,tmp);
-       delete(tmp);
+        tmp =  lerAPartirDaClasse(substring(busca, linhaCompleta));
+        strcpy(resposta ,tmp);
+        delete(tmp);
     }
     else{
         tmp =  lerEntreAspasAteTD(substring(busca2, linhaCompleta), strlen(busca2));
@@ -639,8 +639,8 @@ int* splitarData(char linha[]){
             p = strtok (NULL, "- ");
         }
         delete(frase);
-        }
-    //se for apenas ano
+    }
+        //se for apenas ano
     else{
         datas[2] = atoi(linha);
         datas[1] = 0;
@@ -653,7 +653,7 @@ int* splitarData(char linha[]){
         datas[2] = aux;
     }
 
-return datas;
+    return datas;
 }
 
 int pegarCapacidade(char linhaCompleta[]){
@@ -731,7 +731,7 @@ char* lerArquivo(char endereco[]){
         strcat(aux, linha);
     }
 
-   // delete(linha);
+    // delete(linha);
     fclose(arquivo);
     return (aux);
 
