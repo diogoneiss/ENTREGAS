@@ -1,9 +1,9 @@
 #include <iostream>
 
-
 /*
-	Desabilita todas os printfs, que só servem pra debug no código. O define substitui todos antes da compilacao e substitui pela versao comentada.
+	Desabilita ou habilita todas os printfs, que só servem pra debug no código. O define substitui todos antes da compilacao e substitui pela versao comentada.
 	Para mostrar as flags de debug, basta retirar o // antes de printf
+	Como estou em c++, só uso std::cout dentro do codigo
 */
 #define printf printf
 
@@ -18,7 +18,10 @@ class No {
 	 * @param elemento Conteudo do no.
 	 */
 	 No(int elemento) {
-		No(elemento, NULL, NULL);
+		//No(elemento, NULL, NULL);
+		this->elemento = elemento;
+		this->dir = NULL;
+		this->esq = NULL;
 	}
 
 	/**
