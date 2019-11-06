@@ -1,334 +1,178 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.File;
-import java.util.Date;
-
 /*
 Problemas:
 
 
 */
 
-//celulaDupla: TAD com ponteiro para o proximo elemento, com o ultimo apontando como prox null.
-class CelulaDupla {
-    public TimeListaDuplaQuicksort elemento;
+//celula: TAD com ponteiro para o proximo elemento, com o ultimo apontando como prox null.
+class Celula {
+    public TimeLista elemento;
     // elemento
-    public CelulaDupla prox;
-    public CelulaDupla ant;
+    public Celula prox;
 
-    public CelulaDupla() {
+    public Celula() {
 
     }
 
-    public CelulaDupla(TimeListaDuplaQuicksort x) {
+    public Celula(TimeLista x) {
         this.elemento = x;
-        this.prox = this.ant = null;
-
+        this.prox = null;
     }
 }
 
-class ListaFlexDupla {
-    private CelulaDupla primeiro;
-    private CelulaDupla ultimo;
+class ListaFlex {
+    private Celula primeiro;
+    private Celula ultimo;
 
-    /**
-     * Construtor da classe que cria uma lista dupla sem elementos (somente no cabeca).
-     */
-    public ListaFlexDupla() {
-        primeiro = new CelulaDupla();
+    public ListaFlex() {
+        primeiro = new Celula();
         ultimo = primeiro;
     }
 
+    public ListaFlex(int n) {
+        primeiro = new Celula();
+        ultimo = primeiro;
 
-    /**
-     * Retorna o elemento na pos x, sem alterar a lista dupla
-     * @param pos int posicao do elemento a ser retornado
-     */
-    public CelulaDupla elementoNaPosicao(int pos) throws Exception{
-        CelulaDupla resp;
-        int tamanho = tamanho();
-
-        if(pos < 0 || pos >= tamanho)
-            throw new Exception("Erro ao retornar elemento (posicao " + pos + " / " + tamanho + " invalida!");
-
-        // Caminhar ate a posicao anterior a desejada
-        CelulaDupla i = primeiro.prox;
-        for(int j = 0; j < pos; j++, i = i.prox);
-
-        resp = i;
-        //MyIO.println("Elemento na posicao "+pos+"= "+i.elemento.getNomeArquivo());
-
-
-        return resp;
     }
 
+    public int tamanho() {
+        Celula i = primeiro;
+        int j = 0;
+        // percorrer arranjo até que o prox seja null, ou seja, ultimo
+        while (i.prox != null) {
+            i = i.prox;
+            j++;
+        }
+        return j;
+    }
 
-    /**
-     * Insere um elemento na primeira posicao da lista.
-     * @param x TimeListaDuplaQuicksort time a ser inserido.
-     */
-    public void inserirInicio(TimeListaDuplaQuicksort x) {
-        CelulaDupla tmp = new CelulaDupla(x);
+    public void inserirFim(TimeLista x) {
+        Celula entrada = new Celula(x);
+        ultimo.prox = entrada;
+        ultimo = entrada;
+        ultimo.prox = null;
+    }
 
-        tmp.ant = primeiro;
+    public void inserirInicio(TimeLista x) {
+        Celula tmp = new Celula(x);
         tmp.prox = primeiro.prox;
         primeiro.prox = tmp;
-        if(primeiro == ultimo){
+        if (primeiro == ultimo) {
             ultimo = tmp;
-        }else{
-            tmp.prox.ant = tmp;
         }
         tmp = null;
     }
 
-    /**
-     * Insere um elemento na ultima posicao da lista.
-     * @param x TimeListaDuplaQuicksort elemento a ser inserido.
-     */
-    public void inserirFim(TimeListaDuplaQuicksort x) {
-        ultimo.prox = new CelulaDupla(x);
-        ultimo.prox.ant = ultimo;
-        ultimo = ultimo.prox;
+    public TimeLista removerFim() throws Exception {
+        if (primeiro == ultimo)
+            throw new Exception("Erro!");
+        Celula i;
+        for (i = primeiro; i.prox != ultimo; i = i.prox)
+            ;
+
+        TimeLista elemento = ultimo.elemento;
+        ultimo = i;
+        i = ultimo.prox = null;
+        return elemento;
     }
 
-    /**
-     * Remove um elemento da primeira posicao da lista.
-     * @return resp int elemento a ser removido.
-     * @throws Exception Se a lista nao contiver elementos.
-     */
-    public TimeListaDuplaQuicksort removerInicio() throws Exception {
-        if (primeiro == ultimo) {
-            throw new Exception("Erro ao remover (vazia)!");
-        }
+    public TimeLista removerInicio() throws Exception {
+        if (primeiro == ultimo)
+            throw new Exception("Erro! Estrutura vazia");
 
-        CelulaDupla tmp = primeiro;
+        Celula tmp = primeiro;
         primeiro = primeiro.prox;
-        TimeListaDuplaQuicksort resp = primeiro.elemento;
-        tmp.prox = primeiro.ant = null;
+        TimeLista resp = primeiro.elemento;
+        tmp.prox = null;
         tmp = null;
         return resp;
+
     }
 
-    /**
-     * Remove um elemento da ultima posicao da lista.
-     * @return resp int elemento a ser removido.
-     * @throws Exception Se a lista nao contiver elementos.
-     */
-    public TimeListaDuplaQuicksort removerFim() throws Exception {
-        if (primeiro == ultimo) {
-            throw new Exception("Erro ao remover (vazia)!");
-        }
-        TimeListaDuplaQuicksort resp = ultimo.elemento;
-        ultimo = ultimo.ant;
-        ultimo.prox.ant = null;
-        ultimo.prox = null;
-        return resp;
-    }
-
-    /**
-     * Insere um elemento em uma posicao especifica considerando que o
-     * primeiro elemento valido esta na posicao 0.
-     * @param x int elemento a ser inserido.
-     * @param pos int posicao da insercao.
-     * @throws Exception Se <code>posicao</code> invalida.
-     */
-    public void inserir(TimeListaDuplaQuicksort x, int pos) throws Exception {
-
+    public void inserir(TimeLista x, int pos) throws Exception {
+        // Inserir(6, 2)
         int tamanho = tamanho();
 
-        if(pos < 0 || pos > tamanho){
-            throw new Exception("Erro ao inserir posicao (" + pos + " / tamanho = " + tamanho + ") invalida!");
-        } else if (pos == 0){
-            inserirInicio(x);
-        } else if (pos == tamanho){
-            inserirFim(x);
-        } else {
-            // Caminhar ate a posicao anterior a insercao
-            CelulaDupla i = primeiro;
-            for(int j = 0; j < pos; j++, i = i.prox);
+        if (pos < 0 || pos > tamanho)
+            throw new Exception("Erro!");
 
-            CelulaDupla tmp = new CelulaDupla(x);
-            tmp.ant = i;
+        else if (pos == 0)
+            inserirInicio(x);
+
+        else if (pos == tamanho)
+            inserirFim(x);
+
+        else {
+            Celula i = primeiro;
+
+            for (int j = 0; j < pos; j++, i = i.prox)
+                ;
+
+            Celula tmp = new Celula(x);
             tmp.prox = i.prox;
-            tmp.ant.prox = tmp.prox.ant = tmp;
+            i.prox = tmp;
             tmp = i = null;
         }
     }
 
-    /**
-     * Remove um elemento de uma posicao especifica da lista
-     * considerando que o primeiro elemento valido esta na posicao 0.
-     * @param posicao Meio da remocao.
-     * @return resp int elemento a ser removido.
-     * @throws Exception Se <code>posicao</code> invalida.
-     */
-    public TimeListaDuplaQuicksort remover(int pos) throws Exception {
-        TimeListaDuplaQuicksort resp;
-        int tamanho = tamanho();
-
-        if (primeiro == ultimo){
-            throw new Exception("Erro ao remover (vazia)!");
-
-        } else if(pos < 0 || pos >= tamanho){
-            throw new Exception("Erro ao remover (posicao " + pos + " / " + tamanho + " invalida!");
-        } else if (pos == 0){
-            resp = removerInicio();
-        } else if (pos == tamanho - 1){
-            resp = removerFim();
-        } else {
-            // Caminhar ate a posicao anterior a insercao
-            CelulaDupla i = primeiro.prox;
-            for(int j = 0; j < pos; j++, i = i.prox);
-
-            i.ant.prox = i.prox;
-            i.prox.ant = i.ant;
-            resp = i.elemento;
-            i.prox = i.ant = null;
-            i = null;
-        }
-
-        return resp;
-    }
-
-    /**
-     * Mostra os elementos da lista separados por espacos.
-     */
     public void mostrar() {
+        Celula i = primeiro.prox;
         int j = 0;
 
-        for (CelulaDupla i = primeiro.prox; i != null; i = i.prox, j++) {
-            //System.out.printf("[%d] ", j);
+        do{
+            MyIO.print("["+j+"] ");
             i.elemento.imprimir();
-            //MyIO.println(i.elemento.getApelido());
+            i = i.prox;
+            j++;
+        } while (i != null);
+
+       // i.elemento.imprimir();
+    }
+
+    public TimeLista remover(int pos) throws Exception {
+        // remover(1)
+        TimeLista elemento;
+        int tamanho = tamanho();
+        if (primeiro == ultimo || pos < 0 || pos >= tamanho)
+            throw new Exception("Erro!");
+        else if (pos == 0)
+            elemento = removerInicio();
+        else if (pos == tamanho - 1)
+            elemento = removerFim();
+        else {
+            Celula i = primeiro;
+            for (int j = 0; j < pos; j++, i = i.prox);
+            
+            Celula tmp = i.prox;
+            elemento = tmp.elemento;
+            i.prox = tmp.prox;
+            tmp.prox = null;
+            i = tmp = null;
         }
+        return elemento;
     }
 
-    /**
-     * Mostra os elementos da lista de forma invertida
-     * e separados por espacos.
-     */
-    public void mostrarInverso() {
-        System.out.print("[ ");
-        for (CelulaDupla i = ultimo; i != primeiro; i = i.ant){
-            System.out.print(i.elemento + " ");
-        }
-        System.out.println("] "); // Termina de mostrar.
-    }
-
-    /**
-     * Calcula e retorna o tamanho, em numero de elementos, da lista.
-     * @return resp int tamanho
-     */
-    public int tamanho() {
-        int tamanho = 0;
-        for(CelulaDupla i = primeiro; i != ultimo; i = i.prox, tamanho++);
-        return tamanho;
-    }
-
-    /**
-     * Funcao sobrecarregada para chamar a versao recursiva do quicksort.
-     * @return numero de comparacoes feitas
-     * @throws Exception se houver algum erro de remocao ou insercao
-     */
-
-    public int quicksort()throws Exception{
-        return quicksort(0, this.tamanho()-1);
-    }
-
-    /** 
-     * Versão recursiva do quicksort, a ser chamado por uma funcao sobrecarregada acima, sem parâmeteos
-     * @param esq = limite na esquerda do quicksort
-     * @param dir = limite na direita do quicksort
-     * @return número de comparações entre apelidos dos times realizadas
-     * @throws Exception com problemas no getApelido(), que não devem ocorrer de forma alguma.
-     */
-    public int quicksort(int esq, int dir) throws Exception{
-        int comparacoes = 0;
-       
-        int i = esq, j = dir;
-        //System.out.printf("Posicao atual de esq e dir: %d e %d.\n", esq, dir);
-
-        CelulaDupla pivo = primeiro;
-
-        //movimentar o pivo pra mediana
-        for(int k = 0; k <= (dir+esq)/2; k++, pivo = pivo.prox);
-
-        while (i <= j) {
-
-            // os dois fors abaixo são a versao lista dupla de "while (array[j] > pivo) j--;"
-
-            String apelidoPivo = pivo.elemento.getApelido().trim();
-            CelulaDupla tmp = this.elementoNaPosicao(i);
-
-            while(tmp.elemento.getApelido().compareTo(apelidoPivo) < 0 /* && i<dir */){
-
-                if(tmp.elemento.getApelido() == null || apelidoPivo == null)
-                    throw new Exception("Apelido vazio");
-
-                tmp = tmp.prox;
-                i++;
-                comparacoes++;
-
-            }
-            tmp = this.elementoNaPosicao(j);
-
-            while(tmp.elemento.getApelido().compareTo(apelidoPivo) > 0/* && j > esq*/){
-
-                if(tmp.elemento.getApelido() == null || apelidoPivo == null)
-                    throw new Exception("Apelido vazio");
-                
-                tmp = tmp.ant;
-                j--;
-                comparacoes++;
-            }
-
-            // add as duas comparacoes nao contabilizadas
-            comparacoes += 2;
-
-            if (i <= j) {
-                //System.out.println("Swappando i e j, nas posicoes "+i + " "+j);
-                swap(i, j);
-                i++;
-                j--;
-            }
-        }
-        //chamadas recursivas
-        if (j > esq)
-            comparacoes += quicksort(esq, j+1);
-        if (i < dir)
-            comparacoes += quicksort(i, dir);
-
-        return comparacoes;
-    }
-
-    public void swap(int pos1, int pos2) throws Exception{
-        
-        
-        TimeListaDuplaQuicksort tmp = elementoNaPosicao(pos1).elemento;
-        elementoNaPosicao(pos1).elemento = elementoNaPosicao(pos2).elemento;
-        elementoNaPosicao(pos2).elemento = tmp;
-        
-    }
 }
 
-class TimeListaDuplaQuicksort {
+class TimeLista {
 
     private String nome, apelido, estadio, tecnico, liga, nomeArquivo;
     private int capacidade, fundacaoDia, fundacaoMes, fundacaoAno;
     private long paginaTam;
 
-    public TimeListaDuplaQuicksort() {
+    public TimeLista() {
         nome = apelido = estadio = tecnico = liga = nomeArquivo = "";
         paginaTam = capacidade = fundacaoDia = fundacaoMes = fundacaoAno = 0;
     }
 
-    public TimeListaDuplaQuicksort (String nomeArq) throws Exception {
+    public TimeLista(String nomeArq) throws Exception {
         ler(nomeArq);
     }
 
     public static void main(String[] args) throws Exception {
-        long inicio = new Date().getTime();
-
         MyIO.setCharset("UTF-8");
 
         String[] entradas = new String[100];
@@ -345,40 +189,92 @@ class TimeListaDuplaQuicksort {
 
         // MyIO.println("Numero de modificacoes: "+quantidadeModificacoes);
         // array de referencias a objetos
-        TimeListaDuplaQuicksort[] conjuntoTimes = new TimeListaDuplaQuicksort[quantidadeDeFrases];
+        TimeLista[] conjuntoTimes = new TimeLista[quantidadeDeFrases];
 
         // criar os objetos de acordo.
         for (int i = 0; i < quantidadeDeFrases; i++) {
             // criar o objeto e chamar o construtor
-            conjuntoTimes[i] = new TimeListaDuplaQuicksort(entradas[i]);
+            conjuntoTimes[i] = new TimeLista(entradas[i]);
         }
 
         // lista da questao
+        // ler a quantidade de operacoes a serem realizadas
+        int quantidadeModificacoes = Integer.parseInt(MyIO.readLine());
 
-        ListaFlexDupla listaDosTimes = new ListaFlexDupla();
+        ListaFlex listaDosTimes = new ListaFlex(quantidadeDeFrases + quantidadeModificacoes);
 
         // adicionar os times mencionados previamente no fim da lista
         for (int i = 0; i < quantidadeDeFrases; i++) {
             listaDosTimes.inserirFim(conjuntoTimes[i]);
         }
 
-       //MyIO.println("Chegando no quicksort");
-        int totalComparacoes = listaDosTimes.quicksort();
-        listaDosTimes.quicksort();
-        listaDosTimes.quicksort();
-        
+        //listaDosTimes.mostrar();
+
+        /************* MÉTODOS DA LISTA DAQUI EM DIANT **********/
+
+        // arranjo com string das operacoes
+        String operacoes[] = new String[quantidadeModificacoes];
+
+        // MyIO.println("Terminei de criar o arranjo, tudo ok por aqui.");
+
+        for (int i = 0; i < quantidadeModificacoes; i++) {
+            operacoes[i] = MyIO.readLine();
+        }
+
+        // MyIO.println("Terminei de inserir as entradas, tudo ok por aqui.");
+        // ler e executar as operacoes
+        for (int j = 0; j < quantidadeModificacoes; j++) {
+
+            // metodos de insercao
+            if (operacoes[j].charAt(0) == 'I') {
+                // MyIO.println("Encontrei operacao de insercao");
+                // criar e jogar o time no inicio
+                if (operacoes[j].charAt(1) == 'I') {
+                    TimeLista novaEntrada = new TimeLista(operacoes[j].substring(3));
+                    listaDosTimes.inserirInicio(novaEntrada);
+                }
+
+                else if (operacoes[j].charAt(1) == 'F') {
+                    TimeLista novaEntrada = new TimeLista(operacoes[j].substring(3));
+                    listaDosTimes.inserirFim(novaEntrada);
+                }
+                // adicionar o time na posicao especificada
+                else if (operacoes[j].charAt(1) == '*') {
+                    TimeLista novaEntrada = new TimeLista(operacoes[j].substring(6));
+                    int pos = Integer.parseInt(operacoes[j].substring(3, 5));
+                    listaDosTimes.inserir(novaEntrada, pos);
+
+                }
+            }
+
+            // metodos de remocao
+            else if (operacoes[j].charAt(0) == 'R') {
+
+                // MyIO.println("Encontrada operacao de remocao");
+
+                if (operacoes[j].charAt(1) == 'I') {
+                    TimeLista removido = listaDosTimes.removerInicio();
+                    System.out.printf("(R) %s\n", removido.getNome());
+                }
+
+                else if (operacoes[j].charAt(1) == 'F') {
+                    TimeLista removido = listaDosTimes.removerFim();
+                    System.out.printf("(R) %s\n", removido.getNome());
+                }
+
+                // remover o time na posicao especificada
+                else if (operacoes[j].charAt(1) == '*') {
+                    int posRemover = Integer.parseInt(operacoes[j].substring(3, 5));
+                    // MyIO.println("Pos removida: "+posRemover);
+                    TimeLista removido = listaDosTimes.remover(posRemover);
+                    System.out.printf("(R) %s\n", removido.getNome());
+                }
+            }
+
+        }
+
         // metodo de printar tudo
         listaDosTimes.mostrar();
-
-
-        long fim = new Date().getTime();
-
-        long execucao = fim-inicio;
-        Arq.openWrite("649651_quicksort2.txt");
-
-        Arq.print("649651\t"+execucao+"\t"+totalComparacoes+"\t");
-
-        Arq.close();
 
         // fim da main
     }
@@ -650,7 +546,7 @@ class TimeListaDuplaQuicksort {
                 // Capacity
             } else if (removeTags(campo).toLowerCase().contains("capacity")) {
                 campo = campo.split("<br")[0];
-                campo = removeTags(campo.split("</td>")[0]);
+                campo = removeTags(campo.split("</td>")[0].replace(" ", ""));
                 this.capacidade = Integer.parseInt(removePunctuation(campo.substring(8).split(";")[0]));
 
                 // Coach
