@@ -14,7 +14,7 @@ public class ArvoreBinariaTimesDeTimes {
 
 	static int comparacoes = 0;
 	private NoNumerico raiz; // Raiz da arvore.
-	private int nosPesquisados;
+	private AuxiliarPesquisa auxiliarPesquisa;
 
 	/**
 	 * Construtor da classe.
@@ -55,37 +55,28 @@ public class ArvoreBinariaTimesDeTimes {
 		Time[] conjuntoTimes = new Time[quantidadeDeFrases];
 		
 		ArvoreBinariaTimesDeTimes arvoreBinaria = new ArvoreBinariaTimesDeTimes(15);
-		
-		MyIO.println("Mostrar pré pós inserção dos 15 nums");
-		arvoreBinaria.mostrarPre();
 
         // criar os objetos de acordo e inserir
         for (int i = 0; i < quantidadeDeFrases; i++) {
             // criar o objeto e chamar o construtor
 			conjuntoTimes[i] = new Time(entradas[i]);
-			MyIO.println(conjuntoTimes[i].getNome());
+			//MyIO.println(conjuntoTimes[i].getNome());
 			arvoreBinaria.inserir2(conjuntoTimes[i]);
 		}
-		MyIO.println("____________________________________________");
 		//ler do stdin as entradas a serem pesquisadas
 		String listaPesquisa[] = new String[100];
 		int contador = 0;
 		do {
 			listaPesquisa[contador] = MyIO.readLine();
-			MyIO.println(""+listaPesquisa[contador]);
+			//MyIO.println(""+listaPesquisa[contador]);
         } while (!Time.estaNoTimeFinal(listaPesquisa[contador++]));
 		
 		contador--;
 
-		MyIO.println("\nMostrar pré, dentro da main, após inserções");
-		arvoreBinaria.mostrarPre();
-
 		//fazer a busca em si
 		for(int i = 0; i < contador; i++){
-			MyIO.println("\n------------------------------------------------");
-			MyIO.println("Chave atual: "+listaPesquisa[i]);	
+			MyIO.print(listaPesquisa[i]);	
 			arvoreBinaria.pesquisarPreNumerico(listaPesquisa[i]);
-			MyIO.println("\n------------------------------------------------");	
 		}
 
         long fim = new Date().getTime();
@@ -112,14 +103,20 @@ public class ArvoreBinariaTimesDeTimes {
 			mostrarPre(x.dir);
 		}
 	}
+
 	/**
-	 * 
 	 * @param chave : Nome do time, a ser pesquisado em TODOS os nós
 	 * @return se encontrou ou nao a chave na árvore
 	 */
 	public boolean pesquisarPreNumerico(String chave) {
-		this.nosPesquisados = 0;
-		return pesquisarPreNumerico(raiz, chave);
+		auxiliarPesquisa = new AuxiliarPesquisa();
+		MyIO.print(" raiz");
+		boolean encontrado = pesquisarPreNumerico(this.raiz, chave);
+
+		if(!auxiliarPesquisa.encontrado && !auxiliarPesquisa.pesquisaConcluida){
+			MyIO.println(" NÃO");
+		}
+		return encontrado;
 	}
 
 	/**
@@ -129,31 +126,29 @@ public class ArvoreBinariaTimesDeTimes {
 	 */
 	private boolean pesquisarPreNumerico(NoNumerico i, String chave) {
 		
-		boolean achado = false;
-
 		if (i != null) {
-			MyIO.println("Numero do no atual: "+i.elemento);
-			nosPesquisados++;
-			achado = i.raiz.pesquisar(chave); // Conteudo do NoTime.
+			//MyIO.println("Numero do no atual: "+i.elemento);
+			this.auxiliarPesquisa.nosPesquisados++;
+			this.auxiliarPesquisa.encontrado = i.raiz.pesquisar(chave); // Conteudo do NoTime.
 			comparacoes += i.raiz.comparacoes;
 
-			if(!achado){
-				achado = pesquisarPreNumerico(i.esq, chave); // Elementos da esquerda.
-				MyIO.println("\tIndo para a ESQUERDA, no no numerico");
+			if(!this.auxiliarPesquisa.encontrado && !this.auxiliarPesquisa.pesquisaConcluida){
+				MyIO.print(" ESQ");
+				this.auxiliarPesquisa.encontrado = pesquisarPreNumerico(i.esq, chave); // Elementos da esquerda.
+				
 			}
-			if(!achado){
-				achado = pesquisarPreNumerico(i.dir, chave); // Elementos da direita.
-				MyIO.println("\tIndo para a DIREITA, no no numerico");
+			if(!this.auxiliarPesquisa.encontrado && !this.auxiliarPesquisa.pesquisaConcluida){
+				MyIO.print(" DIR");
+				this.auxiliarPesquisa.encontrado = pesquisarPreNumerico(i.dir, chave); // Elementos da direita.
+			}
+			if(this.auxiliarPesquisa.encontrado && !this.auxiliarPesquisa.pesquisaConcluida){
+				MyIO.println(" SIM");
+				this.auxiliarPesquisa.pesquisaConcluida = true;
+				this.auxiliarPesquisa.encontrado = true;
 			}
 		}
-		else if(this.nosPesquisados > 13){
-			MyIO.println("NÃO, NA MOSTRAR PRÉ");
-			achado = false;
-		}
-		if(achado)
-		MyIO.println("ACHEI ESSA PORRA "+chave);
-
-		return achado;
+		
+		return this.auxiliarPesquisa.encontrado;
 	}
 
 	
@@ -309,24 +304,20 @@ class ArvoreTimes {
 	private boolean pesquisar(String chave, NoTime i) {
 		boolean achado = false;
 		if (i == null) {
-			MyIO.println("A chave do nó não está aqui, i é nulo");
 			comparacoes++;
 
 		} else if (chave.compareTo(i.elemento.getNome()) == 0) {
-			MyIO.println("\nSIM, ACHEI DENTRO DO NO TIME "+chave);
-			MyIO.println("No achado: "+i.elemento.getFundacaoAno() % 15);
-			MyIO.println("No achado: "+i.elemento.getNome());
 			achado = true;
 			comparacoes++;
 
 		} else if (chave.compareTo(i.elemento.getNome()) < 0) {
-			MyIO.println("\nTime atual: "+i.elemento.getNome());
-			MyIO.println(" esq ");
+			//MyIO.println("\nTime atual: "+i.elemento.getNome());
+			MyIO.print(" esq");
 			achado = pesquisar(chave, i.esq);
 
 		} else {
-			MyIO.println("\nTime atual: "+i.elemento.getNome());
-			MyIO.println(" dir ");
+			//MyIO.println("\nTime atual: "+i.elemento.getNome());
+			MyIO.print(" dir");
 			achado = pesquisar(chave, i.dir);
 		}
 		return achado;
@@ -787,5 +778,15 @@ class Time {
 		return (frase.length() >= 3 && frase.charAt(0) == 'F' && frase.charAt(1) == 'I' && frase.charAt(2) == 'M');
 	}
 
+}
+class AuxiliarPesquisa{
+	public int nosPesquisados;
+	public boolean encontrado;
+	public boolean pesquisaConcluida;
+
+	AuxiliarPesquisa(){
+		nosPesquisados = 0;
+		encontrado = pesquisaConcluida = false;
+	}
 }
 
