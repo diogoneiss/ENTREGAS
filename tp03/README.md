@@ -17,6 +17,6 @@ O Não está com problema no chartset, mesmo a main e o arquivo estando em UTF-8
 ## Q6
 O Não está com problema no chartset, mesmo a main e o arquivo estando em UTF-8.
 ## Q7
-O Não está com problema no chartset, mesmo a main e o arquivo estando em UTF-8.
+Alguma coisa n o privado, meu publico está 100%.
 ## Q8
 Aguardando o pub.in e pub.out
