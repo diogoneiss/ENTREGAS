@@ -97,7 +97,7 @@ public class ArvoreAlvinegraTimes {
 	private int pesquisar(String chave, No i) {
 		int contador = 0;
 		if (i == null) {
-			System.out.println(" NÃO");
+			System.out.printf(" N%cO\n", (char) 195);
 			contador++;
 
 		} else if (chave.compareTo(i.elemento.getNome()) == 0) {
