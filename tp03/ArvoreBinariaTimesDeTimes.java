@@ -122,7 +122,7 @@ public class ArvoreBinariaTimesDeTimes {
 		boolean encontrado = false;
 
 		if (i != null) {
-			encontrado = i.raiz.pesquisar(chave);
+			encontrado = i.raiz.mostrarPre(chave);
 			comparacoes += i.raiz.comparacoes;
 			// ida pra esquerda
 			if (!encontrado && !this.auxiliarPesquisa.pesquisaConcluida) {
