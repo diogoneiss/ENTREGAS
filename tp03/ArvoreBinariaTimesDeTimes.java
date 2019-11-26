@@ -120,17 +120,17 @@ public class ArvoreBinariaTimesDeTimes {
 	 */
 	private boolean pesquisarArvoreArvores(NoNumerico i, String chave) {
 		boolean encontrado = false;
-		
+
 		if (i != null) {
-		// pesquisa dentro árvore de times, que está dentro do no i
-		encontrado = i.raiz.pesquisar(chave);
-		comparacoes += i.raiz.comparacoes;
+			encontrado = i.raiz.pesquisar(chave);
+			comparacoes += i.raiz.comparacoes;
 			// ida pra esquerda
 			if (!encontrado && !this.auxiliarPesquisa.pesquisaConcluida) {
 				MyIO.print(" ESQ");
 				encontrado = pesquisarArvoreArvores(i.esq, chave); // Elementos da esquerda.
 			}
-			
+			// pesquisa dentro árvore de times, que está dentro do no i
+
 			// ida pra direita
 			if (!encontrado && !this.auxiliarPesquisa.pesquisaConcluida) {
 				MyIO.print(" DIR");
@@ -275,21 +275,22 @@ class ArvoreTimes {
 		boolean achado = false;
 		if (i == null) {
 			comparacoes++;
-
-		} else if (chave.compareTo(i.elemento.getNome()) == 0) {
-			achado = true;
-			comparacoes++;
-
-		} else if (chave.compareTo(i.elemento.getNome()) < 0) {
+		}
+		else if (chave.compareTo(i.elemento.getNome()) < 0){
 			// MyIO.println("\nTime atual: "+i.elemento.getNome());
 			MyIO.print(" esq");
 			achado = pesquisar(chave, i.esq);
-
-		} else {
+		} 
+		else if (chave.compareTo(i.elemento.getNome()) > 0){
 			// MyIO.println("\nTime atual: "+i.elemento.getNome());
 			MyIO.print(" dir");
 			achado = pesquisar(chave, i.dir);
 		}
+		else if (chave.compareTo(i.elemento.getNome()) == 0) {
+		achado = true;
+		comparacoes++;
+		} 
+		
 		return achado;
 	}
 
@@ -297,7 +298,7 @@ class ArvoreTimes {
 	 * Metodo publico recursivo para pesquisar dentre todos os elementos.
 	 */
 	public boolean mostrarPre(String chave) {
-		return mostrarPre(raiz, chave);		
+		return mostrarPre(raiz, chave);
 	}
 
 	/**
@@ -308,13 +309,13 @@ class ArvoreTimes {
 	private boolean mostrarPre(NoTime i, String chave) {
 		boolean resp = false;
 		if (i != null) {
-			
-			if(!resp){
+
+			if (!resp) {
 				resp = mostrarPre(i.esq, chave); // Elementos da esquerda.
 				MyIO.print(" esq");
 			}
 			resp = i.elemento.getNome().compareTo(chave) == 0; // Conteudo do NoTime.
-			if(!resp){
+			if (!resp) {
 				resp = mostrarPre(i.dir, chave); // Elementos da direita.
 				MyIO.print(" dir");
 			}
