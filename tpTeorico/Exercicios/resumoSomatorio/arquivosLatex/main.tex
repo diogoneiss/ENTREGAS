@@ -1,0 +1,92 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% How to use writeLaTeX: 
+%
+% You edit the source code here on the left, and the preview on the
+% right shows you the result within a few seconds.
+%
+% Bookmark this page and share the URL with your co-authors. They can
+% edit at the same time!
+%
+% You can upload figures, bibliographies, custom classes and
+% styles using the files menu.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[14pt]{article}
+
+\usepackage{sbc-template}
+
+\usepackage{graphicx,url}
+
+\usepackage[brazil]{babel}   
+\usepackage[utf8]{inputenc}  
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{verbatim}
+\pagestyle{fancy}
+\fancyhead[L]{ }
+\fancyhead[R]{ }
+\renewcommand{\headrulewidth}{0pt}
+\sloppy
+\begin{document} 
+
+\title{Resumo da notação somatório}
+
+\author{Diogo O. Neiss }
+  
+
+\address{Graduando em Ciência da Computação \\
+Pontifícia Universidade Católica de Minas Gerais
+(PUC MG)\\
+Av. Dom José Gaspar, 500 Coração Eucarístico - Belo Horizonte - MG 30535-901, Brasil\\
+  \email{diogo.neiss@sga.pucminas.br}
+}
+
+\maketitle
+     
+%\section*{O que é a notação somatório} \label{sec:firstpage}
+
+\begin{equation}\label{exemplo1}
+ \sum\limits_{n=1}^{\infty} 2^{-n} = 1   
+\end{equation}
+
+A notação somatório é utilizada para representar somas sucessivas, iniciando-se no número inferior, representado por \textit{n=1}, e indo até o número superior, representado no exemplo por \textit{$\infty$}. O operador da notação somatório é a letra maiúscula grega sigma, \large$\sum$.
+
+O exemplo da equação \ref{exemplo1} descreve a seguinte equação:
+\begin{equation}\label{descricaoExemplo}
+ \frac{1}{2^0} + \frac{1}{2^1} + \frac{1}{2^2} + \frac{1}{2^3} + \frac{1}{2^4} + \frac{1}{2^5} ... + \frac{1}{2^{\infty}}
+\end{equation}
+
+%\subsection*{Vantagens na sua utilização}
+
+Percebe-se que representar a soma sucessiva infinita, como em \ref{descricaoExemplo}, tem diversas desvantagens, dentre elas consumo de espaço, perca de clareza da função original, dificuldade de manipulação, etcs. Portanto, conclui-se que representar séries finitas ou infinitas através do somatório faz com que sejam mais concisas e claras. \\\\
+Entre suas propriedades que facilitam manipulação matemática, temos
+%\section*{Algumas propriedades}
+% pacote para mostrar multilines
+\begin{equation}
+\begin{aligned}
+ & \sum\limits_{n=1}^{n} 1 = n    
+ \hspace{1.5cm}
+ \sum\limits_{n=1}^{n} i = \frac{n(n+1)}{2}
+ \hspace{1.5cm}
+ \sum\limits_{n=1}^{n} i^{2} = \frac{n(n+1)(2n+1)}{6} \\
+ & \sum\limits_{n=1}^{n} i^{3} = {\frac{n(n+1)}{2}}^{2}
+ \hspace{1cm}
+ \sum\limits_{n=1}^{n} ca = c\sum\limits_{n=1}^{n} a
+ \hspace{1cm}
+ \sum\limits_{i=m}^{n} (a_{i} + b_{i})  =  \sum\limits_{i=m}^{n} a_{i} + \sum\limits_{i=m}^{n} b_{i}
+\end{aligned}
+\end{equation}
+
+\cite{stewart:2016}
+
+
+%\section*{Aplicações}
+
+As aplicações da notação são extensas no Cálculo II e nas ciências exatas em geral, além te existirem outras estruturas análogas, como na programação o laço \verb|for(int i = 0; i < n; i++){...}|,
+em que alguma instrução é executada diversas vezes, iniciando-se no limite inferior e indo até o limite superior, de forma semelhante ao somatório com funções.
+
+\bibliographystyle{sbc}
+\bibliography{sbc-template}
+
+\end{document}

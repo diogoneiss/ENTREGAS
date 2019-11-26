@@ -1,0 +1,78 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% How to use writeLaTeX: 
+%
+% You edit the source code here on the left, and the preview on the
+% right shows you the result within a few seconds.
+%
+% Bookmark this page and share the URL with your co-authors. They can
+% edit at the same time!
+%
+% You can upload figures, bibliographies, custom classes and
+% styles using the files menu.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[14pt]{article}
+
+\usepackage{sbc-template}
+
+\usepackage{graphicx,url}
+
+\usepackage[brazil]{babel}   
+\usepackage[utf8]{inputenc}  
+
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{verbatim}
+\pagestyle{fancy}
+
+\fancyhead[L]{ }
+\fancyhead[R]{ }
+\renewcommand{\headrulewidth}{0pt}
+\sloppy
+\begin{document} 
+
+
+
+\title{Resumo do artigo "Novas perspectivas na qualidade de Software"}
+
+\author{Arthur A. Campos, Diogo O. Neiss, Lorenzo D. Costa, Lucas F. Saliba}
+  
+
+\address{Graduandos em Ciência da Computação \\
+Pontifícia Universidade Católica de Minas Gerais
+(PUC MG)\\
+Av. Dom José Gaspar, 500 Coração Eucarístico - Belo Horizonte - MG 30535-901, Brasil\\
+}
+
+\maketitle
+     
+%\section*{Introdução} \label{sec:firstpage}
+
+Este resumo visa elucidar conceitos e discussões apresentadas no artigo referenciado, \textit{New perspectives on software quality}, dos autores R. Breu, A. Combelles e  M. Felderer, publicado na revista IEEE Software.
+
+Um dos principais focos da inovação dentro da administração de qualidade de software é exatamente a qualidade e robustez do software, uma vez que cada vez mais serviços dependem de aplicações seguras e estáveis, como bancos, e-commerces, automóveis, etcs. Resiliência, segurança, privacidade são diferenciais competitivos e necessidades em infraestruturas interconectadas em larga escala.\\
+São apontados na revista três grandes desafios para a engenharia de qualidade:
+
+\begin{itemize}
+    \item {Serviços interconectados}: Cada vez mais serviços de TI são fragmentados e descentralizados, portando a qualidade de software deve lidar com aspectos multiplataforma e questões de segurança e avaliação.
+
+\item{Evolução de sistemas}: Adminstração de qualidade de software exige condução de processos de qualidade, controle de versionamento de artefatos, e um intenso conhecimeno de processos interpessoais entre pessoas, além de automação para aumento de eficiência.
+
+\item{Colaboração com \textit{stakeholders}}: É essencial a colaboração de engenheiros de software com a esfera admistrativa e executiva, sendo necessários métodos para a transmissão de informação no nível desejado, seja ele técnico, comercial, etcs.
+\end{itemize}
+Por fim, os autores apresentam direções futuras para a qualidade de software, elencadas abaixo
+\begin{itemize}
+        \item Adminstração de conhecimento, uma vez que o conhecimento é composto por grandes volumes de informações estruturadas e não estruturadas, como repositórios de código, requirimentos de especificações, testes, regulações legais, etcs. è necessário prover a todos os indivíduos na cadeia acesso a essa informação para que todos possam cumprir suas tarefas da maneira mais eficiente possível
+        \item Automação, envolvendo geração automática de artefatos e execução contínua eficiente de tarefas automatizadas e semi-automatizadas;
+        \item Análise de dados, no que tange a aplicação de ferramentas de análise para avaliação  de qualidade, previsão de futuro e guiar passos subsequentes
+        \item Processos colaborativos, através de todos os níveis organizacionais, integrando toda a cadeia produtiva, indo desde os donos da empresa aos desenvolvedores júniores, melhorando o trabalho e entendimento do processo de todos.
+    \end{itemize}
+    
+
+
+%Não há referências, deixei a citação no .bib
+%\bibliographystyle{sbc}
+%\bibliography{sbc-template}
+
+\end{document}
