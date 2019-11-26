@@ -21,7 +21,7 @@ public class ArvoreBinariaTimesDeTimes {
 
 	/**
 	 * Construtor da classe. Essa árvore conterá apenas nós numericos, e neles há
-	 * raízes para árvores de times. 
+	 * raízes para árvores de times.
 	 */
 	public ArvoreBinariaTimesDeTimes() throws Exception {
 		raiz = null;
@@ -120,17 +120,17 @@ public class ArvoreBinariaTimesDeTimes {
 	 */
 	private boolean pesquisarArvoreArvores(NoNumerico i, String chave) {
 		boolean encontrado = false;
+		
 		if (i != null) {
-			
-			//pesquisa dentro árvore de times, que está dentro do no i
-			encontrado = i.raiz.pesquisar(chave); 
-			comparacoes += i.raiz.comparacoes;
-
+		// pesquisa dentro árvore de times, que está dentro do no i
+		encontrado = i.raiz.pesquisar(chave);
+		comparacoes += i.raiz.comparacoes;
 			// ida pra esquerda
 			if (!encontrado && !this.auxiliarPesquisa.pesquisaConcluida) {
 				MyIO.print(" ESQ");
 				encontrado = pesquisarArvoreArvores(i.esq, chave); // Elementos da esquerda.
 			}
+			
 			// ida pra direita
 			if (!encontrado && !this.auxiliarPesquisa.pesquisaConcluida) {
 				MyIO.print(" DIR");
@@ -157,27 +157,29 @@ public class ArvoreBinariaTimesDeTimes {
 		// se nao tiver raiz, cria ela.
 		if (raiz == null) {
 			raiz = new NoNumerico(x.getFundacaoAno() % 15, x);
-		} 
-		//verifica se o mod 15 é igual ao da raiz. Se for, insere na árvore dentro do nó
+		}
+		// verifica se o mod 15 é igual ao da raiz. Se for, insere na árvore dentro do
+		// nó
 		else if (x.getFundacaoAno() % 15 == raiz.elemento) {
 			raiz.raiz.inserir(x);
-		} 
-		//vai pra esquerda
+		}
+		// vai pra esquerda
 		else if (x.getFundacaoAno() % 15 < raiz.elemento) {
 			inserir(x, raiz.esq, raiz);
-		} 
-		//vai pra direita
+		}
+		// vai pra direita
 		else if (x.getFundacaoAno() % 15 > raiz.elemento) {
 			inserir(x, raiz.dir, raiz);
 		} else {
 			throw new Exception("Erro ao inserir Dentro da versao com apenas um parâmetro!");
 		}
 	}
-	//inserir da árvore de árvores privado
+
+	// inserir da árvore de árvores privado
 	private void inserir(Time x, NoNumerico i, NoNumerico pai) throws Exception {
 
 		int ano = x.getFundacaoAno() % 15;
-		//se i for null cria o no, de acordo com a posicao do pai
+		// se i for null cria o no, de acordo com a posicao do pai
 		if (i == null) {
 			// o construtor do no automaticamente insere na arvore o time.
 			if (ano < pai.elemento) {
@@ -185,8 +187,8 @@ public class ArvoreBinariaTimesDeTimes {
 			} else {
 				pai.dir = new NoNumerico(ano, x);
 			}
-			
-		} 
+
+		}
 		// se for igual ao elemento, inserir na árvore dele
 		else if (ano == i.elemento) {
 			i.raiz.inserir(x);
@@ -194,8 +196,8 @@ public class ArvoreBinariaTimesDeTimes {
 		// navegando pra esquerda
 		else if (ano < i.elemento) {
 			inserir(x, i.esq, i);
-		} 
-		//navegando pra direita
+		}
+		// navegando pra direita
 		else if (ano > i.elemento) {
 			inserir(x, i.dir, i);
 		} else {
@@ -215,18 +217,18 @@ class NoNumerico {
 	public NoNumerico esq, dir; // Filhos da esq e dir.
 	public ArvoreTimes raiz;
 
-	
 	public NoNumerico(int elemento) throws Exception {
 		this.elemento = elemento;
 		this.esq = null;
 		this.dir = null;
 		this.raiz = new ArvoreTimes();
 	}
-/**
+
+	/**
 	 * Construtor da classe.
 	 * 
 	 * @param elemento ano % 15 do NoTime.
-	 * @param x objeto Time
+	 * @param x        objeto Time
 	 */
 	public NoNumerico(int elemento, Time x) throws Exception {
 		this.elemento = elemento;
@@ -237,9 +239,10 @@ class NoNumerico {
 	}
 
 }
+
 /**
- * Árvore de times.
- * Cada "noNumerico" contêm uma referencia para um objeto ArvoreTimes
+ * Árvore de times. Cada "noNumerico" contêm uma referencia para um objeto
+ * ArvoreTimes
  */
 class ArvoreTimes {
 	int comparacoes;
@@ -291,25 +294,32 @@ class ArvoreTimes {
 	}
 
 	/**
-	 * Metodo publico iterativo para exibir elementos.
+	 * Metodo publico recursivo para pesquisar dentre todos os elementos.
 	 */
-	public void mostrarPre() {
-		System.out.print("[ ");
-		mostrarPre(raiz);
-		System.out.println("]");
+	public boolean mostrarPre(String chave) {
+		return mostrarPre(raiz, chave);		
 	}
 
 	/**
-	 * Metodo privado recursivo para exibir elementos.
+	 * Metodo privado recursivo para pesquisar dentre todos os elementos.
 	 * 
 	 * @param i NoTime em analise.
 	 */
-	private void mostrarPre(NoTime i) {
+	private boolean mostrarPre(NoTime i, String chave) {
+		boolean resp = false;
 		if (i != null) {
-			MyIO.println(i.elemento.getNome()); // Conteudo do NoTime.
-			mostrarPre(i.esq); // Elementos da esquerda.
-			mostrarPre(i.dir); // Elementos da direita.
+			
+			if(!resp){
+				resp = mostrarPre(i.esq, chave); // Elementos da esquerda.
+				MyIO.print(" esq");
+			}
+			resp = i.elemento.getNome().compareTo(chave) == 0; // Conteudo do NoTime.
+			if(!resp){
+				resp = mostrarPre(i.dir, chave); // Elementos da direita.
+				MyIO.print(" dir");
+			}
 		}
+		return resp;
 	}
 
 	/**

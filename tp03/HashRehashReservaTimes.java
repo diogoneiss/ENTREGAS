@@ -54,7 +54,7 @@ public class HashRehashReservaTimes {
 			if (hashTimes.pesquisar(pesquisa))
 				MyIO.println(" SIM");
 			else
-				MyIO.println(" NÃO");
+			System.out.printf(" N%cO\n", (char)199);
 
 		}
 		int comparacoes = hashTimes.comparacoes;

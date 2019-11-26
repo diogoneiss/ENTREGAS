@@ -61,7 +61,7 @@ public class ArvoreTrieTimes {
 			if (arvoreBinaria.pesquisar(listaPesquisa[i]))
 				MyIO.println(" SIM");
 			else
-				MyIO.println(" NÃO");
+				System.out.printf(" N%cO\n", (char)199);
 
 		}
 		int comparacoes = arvoreBinaria.comparacoes;
